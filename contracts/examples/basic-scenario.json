@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "simulation": {
+    "durationMinutes": 480,
+    "seed": 20260801
+  },
+  "arrivals": {
+    "type": "poisson",
+    "ratePerHour": 24
+  },
+  "service": {
+    "type": "triangular",
+    "minimumMinutes": 3,
+    "modeMinutes": 6,
+    "maximumMinutes": 12
+  },
+  "queue": {
+    "discipline": "priority_fifo",
+    "serverCount": 4,
+    "priorityCustomerRatio": 0.15
+  }
+}

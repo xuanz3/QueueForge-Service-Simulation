@@ -1,0 +1,25 @@
+name: Feature
+description: Add a scoped QueueForge capability
+title: "[Feature] "
+labels:
+  - type:feature
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What user or engineering outcome is required?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable completion conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: exclusions
+    attributes:
+      label: Exclusions
+      description: What is intentionally outside this Issue?
