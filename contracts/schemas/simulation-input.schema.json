@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://queueforge.dev/contracts/simulation-input.schema.json",
+  "title": "QueueForge Simulation Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "simulation",
+    "arrivals",
+    "service",
+    "queue"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "durationMinutes",
+        "seed"
+      ],
+      "properties": {
+        "durationMinutes": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 1440
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "arrivals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "ratePerHour"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "poisson"
+          ]
+        },
+        "ratePerHour": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 500
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "minimumMinutes",
+        "modeMinutes",
+        "maximumMinutes"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "triangular"
+          ]
+        },
+        "minimumMinutes": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "modeMinutes": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "maximumMinutes": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "queue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "discipline",
+        "serverCount",
+        "priorityCustomerRatio"
+      ],
+      "properties": {
+        "discipline": {
+          "enum": [
+            "fifo",
+            "priority_fifo"
+          ]
+        },
+        "serverCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "priorityCustomerRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}
