@@ -1,0 +1,58 @@
+# Operating systems
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Java
+services/control-plane-java/target/
+.gradle/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# C++
+engines/simulation-cpp/build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+
+# Node
+apps/web/node_modules/
+apps/web/dist/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Generated runtime data
+runtime/
+reports/generated/
+demo/generated/
+coverage/
+test-results/
+playwright-report/
+
+# Keep final README evidence
+!docs/assets/readme/
+!docs/assets/readme/**
