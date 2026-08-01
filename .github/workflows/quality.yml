@@ -48,4 +48,6 @@ jobs:
         with: {python-version: '3.14'}
       - run: python tools/verify_phase_0.py
       - run: python tools/verify_phase_1.py
+      - name: Verify C++ runtime compatibility
+        run: python tools/verify_cpp_runtime.py
       - run: docker compose config

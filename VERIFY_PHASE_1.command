@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(cd "$(dirname "$0")" && pwd)"
 [ -f .env ] || cp .env.example .env
 python3 tools/verify_phase_1.py
+python3 tools/verify_cpp_runtime.py
 docker info >/dev/null
 docker compose config >/dev/null
 docker compose --profile tools build

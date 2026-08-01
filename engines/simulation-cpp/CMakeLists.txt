@@ -8,6 +8,10 @@ target_include_directories(queueforge_foundation PUBLIC include)
 target_compile_options(queueforge_foundation PRIVATE -Wall -Wextra -Wpedantic)
 add_executable(queueforge-sim src/main.cpp)
 target_link_libraries(queueforge-sim PRIVATE queueforge_foundation)
+target_link_options(queueforge-sim PRIVATE
+    -static-libgcc
+    -static-libstdc++
+)
 enable_testing()
 add_executable(queueforge-foundation-tests tests/health_test.cpp)
 target_link_libraries(queueforge-foundation-tests PRIVATE queueforge_foundation)

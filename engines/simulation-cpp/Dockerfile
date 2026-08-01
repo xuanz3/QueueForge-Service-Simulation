@@ -9,5 +9,6 @@ RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build bui
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends libstdc++6 && rm -rf /var/lib/apt/lists/*
 COPY --from=build /workspace/build/queueforge-sim /usr/local/bin/queueforge-sim
+RUN /usr/local/bin/queueforge-sim --health
 USER 10001
 ENTRYPOINT ["queueforge-sim"]
