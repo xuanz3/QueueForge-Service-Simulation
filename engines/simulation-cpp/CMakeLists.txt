@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.24)
+project(queueforge_simulation VERSION 0.1.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+add_library(queueforge_foundation src/health.cpp)
+target_include_directories(queueforge_foundation PUBLIC include)
+target_compile_options(queueforge_foundation PRIVATE -Wall -Wextra -Wpedantic)
+add_executable(queueforge-sim src/main.cpp)
+target_link_libraries(queueforge-sim PRIVATE queueforge_foundation)
+target_link_options(queueforge-sim PRIVATE
+    -static-libgcc
+    -static-libstdc++
+)
+enable_testing()
+add_executable(queueforge-foundation-tests tests/health_test.cpp)
+target_link_libraries(queueforge-foundation-tests PRIVATE queueforge_foundation)
+add_test(NAME queueforge-foundation-tests COMMAND queueforge-foundation-tests)

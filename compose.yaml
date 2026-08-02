@@ -1,0 +1,45 @@
+name: queueforge
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${QUEUEFORGE_POSTGRES_DB:-queueforge}
+      POSTGRES_USER: ${QUEUEFORGE_POSTGRES_USER:-queueforge}
+      POSTGRES_PASSWORD: ${QUEUEFORGE_POSTGRES_PASSWORD:-queueforge_local_only}
+    ports:
+      - "${QUEUEFORGE_DB_PORT:-55436}:5432"
+    volumes:
+      - queueforge-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${QUEUEFORGE_POSTGRES_USER:-queueforge} -d ${QUEUEFORGE_POSTGRES_DB:-queueforge}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  api:
+    build: services/control-plane-java
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${QUEUEFORGE_POSTGRES_DB:-queueforge}
+      SPRING_DATASOURCE_USERNAME: ${QUEUEFORGE_POSTGRES_USER:-queueforge}
+      SPRING_DATASOURCE_PASSWORD: ${QUEUEFORGE_POSTGRES_PASSWORD:-queueforge_local_only}
+    ports:
+      - "${QUEUEFORGE_API_PORT:-18086}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  web:
+    build: apps/web
+    environment:
+      VITE_API_BASE_URL: http://localhost:${QUEUEFORGE_API_PORT:-18086}
+    ports:
+      - "${QUEUEFORGE_WEB_PORT:-15176}:5173"
+    depends_on: [api]
+  cpp-engine:
+    profiles: [tools]
+    build: engines/simulation-cpp
+    command: ["--health"]
+  python-analytics:
+    profiles: [tools]
+    build: analytics/queueforge-python
+    command: ["python", "-m", "queueforge_analytics", "health"]
+volumes:
+  queueforge-postgres:

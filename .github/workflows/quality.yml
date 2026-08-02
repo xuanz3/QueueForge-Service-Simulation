@@ -1,0 +1,53 @@
+name: Quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  cpp:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: engines/simulation-cpp}}
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build --parallel
+      - run: ctest --test-dir build --output-on-failure
+  python:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: analytics/queueforge-python}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.14'}
+      - run: python -m pip install .
+      - run: python -m unittest discover -s tests -v
+  java:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: services/control-plane-java}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21', cache: maven}
+      - run: mvn -B test
+  web:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: apps/web}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24', cache: npm, cache-dependency-path: apps/web/package-lock.json}
+      - run: npm ci
+      - run: npm run build
+  repository:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.14'}
+      - run: python tools/verify_phase_0.py
+      - run: python tools/verify_phase_1.py
+      - name: Verify C++ runtime compatibility
+        run: python tools/verify_cpp_runtime.py
+      - run: docker compose config

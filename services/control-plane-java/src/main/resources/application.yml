@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: queueforge-control-plane
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:55436/queueforge}
+    username: ${SPRING_DATASOURCE_USERNAME:queueforge}
+    password: ${SPRING_DATASOURCE_PASSWORD:queueforge_local_only}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+server:
+  error:
+    include-message: never
