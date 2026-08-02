@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +46,15 @@ for relative in [
 ]:
     with (ROOT / relative).open(encoding="utf-8") as handle:
         json.load(handle)
+
+
+for relative in [
+    "RUN_ENGINE_DEMO.command",
+    "VERIFY_PHASE_2.command",
+]:
+    command_path = ROOT / relative
+    if not os.access(command_path, os.X_OK):
+        raise SystemExit(f"Phase 2 command is not executable: {relative}")
 
 cmake = (ROOT / "engines/simulation-cpp/CMakeLists.txt").read_text(encoding="utf-8")
 for required in [
