@@ -56,6 +56,17 @@ for relative in [
     if not os.access(command_path, os.X_OK):
         raise SystemExit(f"Phase 2 command is not executable: {relative}")
 
+
+demo_script = (ROOT / "RUN_ENGINE_DEMO.command").read_text(encoding="utf-8")
+unsafe_cleanup = "rm -f runtime/phase2/*.json"
+safe_cleanup = "find runtime/phase2 -maxdepth 1 -type f -name '*.json' -delete"
+
+if unsafe_cleanup in demo_script:
+    raise SystemExit("Phase 2 demo uses a zsh-unsafe unmatched wildcard cleanup.")
+
+if safe_cleanup not in demo_script:
+    raise SystemExit("Phase 2 demo is missing the safe JSON cleanup command.")
+
 cmake = (ROOT / "engines/simulation-cpp/CMakeLists.txt").read_text(encoding="utf-8")
 for required in [
     "QUEUEFORGE_ENABLE_SANITIZERS",

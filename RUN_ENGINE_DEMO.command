@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
 mkdir -p runtime/phase2
-rm -f runtime/phase2/*.json
+find runtime/phase2 -maxdepth 1 -type f -name '*.json' -delete
 
 run_engine() {
   local input_path="$1"
