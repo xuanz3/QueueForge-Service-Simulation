@@ -30,8 +30,11 @@ endfunction()
 
 add_library(queueforge_engine
     src/health.cpp
+    src/json.cpp
+    src/json_io.cpp
     src/model.cpp
     src/random.cpp
+    src/simulator.cpp
     src/waiting_queue.cpp
 )
 target_include_directories(queueforge_engine PUBLIC include)
@@ -50,13 +53,16 @@ endif()
 
 enable_testing()
 
-add_executable(queueforge-foundation-tests tests/health_test.cpp)
-target_link_libraries(queueforge-foundation-tests PRIVATE queueforge_engine)
-queueforge_target_defaults(queueforge-foundation-tests)
-add_test(NAME queueforge-foundation-tests COMMAND queueforge-foundation-tests)
+function(queueforge_add_test target source)
+    add_executable(${target} ${source})
+    target_link_libraries(${target} PRIVATE queueforge_engine)
+    target_include_directories(${target} PRIVATE tests)
+    queueforge_target_defaults(${target})
+    add_test(NAME ${target} COMMAND ${target})
+endfunction()
 
-add_executable(queueforge-waiting-queue-tests tests/waiting_queue_test.cpp)
-target_link_libraries(queueforge-waiting-queue-tests PRIVATE queueforge_engine)
-target_include_directories(queueforge-waiting-queue-tests PRIVATE tests)
-queueforge_target_defaults(queueforge-waiting-queue-tests)
-add_test(NAME queueforge-waiting-queue-tests COMMAND queueforge-waiting-queue-tests)
+queueforge_add_test(queueforge-health-tests tests/health_test.cpp)
+queueforge_add_test(queueforge-json-tests tests/json_test.cpp)
+queueforge_add_test(queueforge-json-io-tests tests/json_io_test.cpp)
+queueforge_add_test(queueforge-waiting-queue-tests tests/waiting_queue_test.cpp)
+queueforge_add_test(queueforge-simulator-tests tests/simulator_test.cpp)
