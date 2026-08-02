@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://queueforge.dev/contracts/simulation-result.schema.json",
+  "title": "QueueForge Simulation Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "seed",
+    "durationMinutes",
+    "discipline",
+    "metrics",
+    "servers",
+    "events",
+    "invariants"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "engineVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "durationMinutes": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "discipline": {
+      "enum": [
+        "fifo",
+        "priority_fifo"
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arrived",
+        "completed",
+        "waitingAtEnd",
+        "inServiceAtEnd",
+        "averageWaitMinutes",
+        "medianWaitMinutes",
+        "p95WaitMinutes",
+        "maximumWaitMinutes",
+        "averageQueueLength",
+        "maximumQueueLength",
+        "throughputPerHour",
+        "overallUtilisation"
+      ],
+      "properties": {
+        "arrived": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "waitingAtEnd": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inServiceAtEnd": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "averageWaitMinutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "medianWaitMinutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p95WaitMinutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximumWaitMinutes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "averageQueueLength": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximumQueueLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "throughputPerHour": {
+          "type": "number",
+          "minimum": 0
+        },
+        "overallUtilisation": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "servers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "busyMinutes",
+          "utilisation"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "busyMinutes": {
+            "type": "number",
+            "minimum": 0
+          },
+          "utilisation": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "timeMinutes",
+          "customerId",
+          "serverId",
+          "priority",
+          "queueLengthAfter"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "arrival",
+              "service_start",
+              "service_complete"
+            ]
+          },
+          "timeMinutes": {
+            "type": "number",
+            "minimum": 0
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "serverId": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "priority": {
+            "type": "boolean"
+          },
+          "queueLengthAfter": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accountingBalanced",
+        "utilisationWithinRange",
+        "chronologyValid"
+      ],
+      "properties": {
+        "accountingBalanced": {
+          "type": "boolean"
+        },
+        "utilisationWithinRange": {
+          "type": "boolean"
+        },
+        "chronologyValid": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
