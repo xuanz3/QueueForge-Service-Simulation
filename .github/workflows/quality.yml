@@ -177,7 +177,7 @@ jobs:
 
 
 
-  project-release:
+  release-verification:
     name: Release verification
     runs-on: ubuntu-latest
     steps:
