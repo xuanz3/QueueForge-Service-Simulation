@@ -168,9 +168,6 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Verify Phase 5 source
-        working-directory: ../..
-        run: python tools/verify_phase_5.py
 
   repository:
     name: Repository verification

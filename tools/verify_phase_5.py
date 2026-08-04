@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -10,6 +11,7 @@ REQUIRED_FILES = [
     "apps/web/src/styles.css",
     "docs/product/PHASE_5_PRODUCT_INTERFACE.md",
     "docs/testing/PHASE_5_VERIFICATION.md",
+    "docs/testing/INCIDENT-007-PHASE5-VERIFIER-AND-SERVING.md",
     "tools/verify_phase_5_runtime.py",
     "RUN_PRODUCT_UI_DEMO.command",
     "VERIFY_PHASE_5.command",
@@ -51,7 +53,8 @@ for endpoint in [
 for marker in [
     "validateScenario",
     "validateAnalytics",
-    "minimum <= mode",
+    "minimumMinutes <= modeMinutes",
+    "modeMinutes <= maximumMinutes",
     "serverCounts",
 ]:
     if marker not in scenario:
@@ -69,5 +72,17 @@ for marker in [
 for forbidden in ["dangerouslySetInnerHTML", "Math.random()", "mockResult", "fakeResult"]:
     if forbidden in app:
         raise SystemExit(f"Product interface contains forbidden pattern: {forbidden}")
+
+package = json.loads((ROOT / "apps/web/package.json").read_text(encoding="utf-8"))
+if package.get("scripts", {}).get("preview") != "vite preview --host 0.0.0.0 --port 5173":
+    raise SystemExit("Web package is missing the production preview command")
+
+dockerfile = (ROOT / "apps/web/Dockerfile").read_text(encoding="utf-8")
+if 'CMD ["npm", "run", "preview"]' not in dockerfile:
+    raise SystemExit("Web container does not serve the production Vite build")
+
+workflow = (ROOT / ".github/workflows/quality.yml").read_text(encoding="utf-8")
+if "working-directory: ../.." in workflow:
+    raise SystemExit("TypeScript CI contains an unsafe parent working directory")
 
 print(f"Phase 5 repository verification passed ({len(REQUIRED_FILES)} required files).")
