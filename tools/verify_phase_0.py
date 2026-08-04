@@ -17,7 +17,7 @@ REQUIRED = [
     "docs/decisions/ADR-001-polyglot-architecture.md",
     "docs/decisions/ADR-002-cli-json-integration.md",
     "docs/testing/DEFINITION_OF_DONE.md",
-    "docs/portfolio/SCREENSHOT_PLAN.md",
+    "docs/project/SCREENSHOT_PLAN.md",
     "docs/operations/ZERO_COST_POLICY.md",
     "contracts/schemas/simulation-input.schema.json",
     "contracts/examples/basic-scenario.json",

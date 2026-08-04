@@ -5,7 +5,7 @@ staffing decisions before they affect real operations. It combines a
 deterministic C++20 simulation engine, Python multi-seed analytics, a Java
 control plane, PostgreSQL persistence and a React interface.
 
-## Product evidence
+## Product screenshots
 
 <table>
 <tr>
@@ -25,19 +25,19 @@ control plane, PostgreSQL persistence and a React interface.
   <td><sub>Multi-seed staffing comparison</sub></td>
 </tr>
 <tr>
-  <td width="50%"><img src="docs/assets/readme/05-analytics-json-evidence.png" alt="Versioned analytics JSON evidence" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/05-analytics-json-output.png" alt="Versioned analytics JSON output" width="100%"></td>
   <td width="50%"><img src="docs/assets/readme/06-simulation-kpis.png" alt="Deterministic simulation KPI result" width="100%"></td>
 </tr>
 <tr>
-  <td><sub>Versioned analytics JSON evidence</sub></td>
+  <td><sub>Versioned analytics JSON output</sub></td>
   <td><sub>Deterministic simulation KPI result</sub></td>
 </tr>
 <tr>
-  <td width="50%"><img src="docs/assets/readme/07-simulation-json-evidence.png" alt="Versioned simulation JSON evidence" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/07-simulation-json-output.png" alt="Versioned simulation JSON output" width="100%"></td>
   <td width="50%"><img src="docs/assets/readme/08-mobile-interface.png" alt="Responsive mobile interface" width="100%"></td>
 </tr>
 <tr>
-  <td><sub>Versioned simulation JSON evidence</sub></td>
+  <td><sub>Versioned simulation JSON output</sub></td>
   <td><sub>Responsive mobile interface</sub></td>
 </tr>
 </table>
@@ -48,7 +48,7 @@ control plane, PostgreSQL persistence and a React interface.
 - fixed seeds produce deterministic C++ results
 - Python can compare staffing options across repeated simulations
 - Java persists and supervises worker execution
-- PostgreSQL retains lifecycle and result evidence across restarts
+- PostgreSQL retains lifecycle and result data across restarts
 - bounded admission returns explicit HTTP 429 responses under saturation
 - worker failure, timeout, cancellation and control-plane restart are recoverable
 - the React product interface uses the real API rather than mock data
@@ -57,7 +57,7 @@ control plane, PostgreSQL persistence and a React interface.
 
 | Component | Responsibility |
 |---|---|
-| React + TypeScript | Scenario configuration, run tracking and evidence review |
+| React + TypeScript | Scenario configuration, run tracking and result review |
 | Java + Spring Boot | Validation, bounded admission, lifecycle and process control |
 | PostgreSQL + Flyway | Durable request, status, error and result persistence |
 | Python | Multi-seed experiments, statistics and staffing recommendation |
@@ -109,7 +109,7 @@ The verification commands deliberately use Docker for C++, Java, Node,
 PostgreSQL and browser evidence so the host machine does not require those
 toolchains directly.
 
-## Evidence and documentation
+## Documentation
 
 - [System architecture](docs/architecture/CONTROL_PLANE.md)
 - [Reliability model](docs/architecture/RELIABILITY_MODEL.md)
@@ -117,7 +117,7 @@ toolchains directly.
 - [Performance method](docs/performance/PERFORMANCE_METHOD.md)
 - [Run lifecycle](docs/operations/RUN_LIFECYCLE.md)
 - [Reliability playbook](docs/operations/RELIABILITY_PLAYBOOK.md)
-- [Release summary](docs/release/PORTFOLIO_SUMMARY.md)
+- [Release summary](docs/release/PROJECT_SUMMARY.md)
 - [v1.0.0 release notes](docs/release/RELEASE_NOTES_v1.0.0.md)
 - [Final verification contract](docs/testing/PHASE_8_VERIFICATION.md)
 
@@ -131,13 +131,13 @@ toolchains directly.
 6. React product interface
 7. Reliability and fault handling
 8. Quality and performance
-9. Final portfolio release
+9. Release verification
 
 All phases are complete in `v1.0.0`.
 
 ## Scope and limitations
 
-QueueForge is a portfolio-grade local product. It does not claim distributed
+QueueForge is a production-style local product. It does not claim distributed
 worker coordination, cloud-scale capacity or operational staffing advice.
 Performance values depend on the recorded host, Docker version and workload.
 

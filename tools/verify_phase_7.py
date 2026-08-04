@@ -100,7 +100,7 @@ workflow = (ROOT / ".github/workflows/quality.yml").read_text(
 for marker in [
     "quality-performance:",
     "Verify quality and performance",
-    "phase7-performance-evidence",
+    "phase7-performance-results",
     "python tools/verify_phase_7.py",
 ]:
     if marker not in workflow:
@@ -114,9 +114,9 @@ phase7_review_markers = [
 ]
 final_release_markers = [
     "# QueueForge",
-    "## Product evidence",
-    "## Reference verification",
-    "All phases are complete in `v1.0.0`.",
+    "## Product screenshots",
+    "## Reference measurements",
+    "All planned phases are complete in `v1.0.0`.",
     "docs/release/RELEASE_NOTES_v1.0.0.md",
 ]
 

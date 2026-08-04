@@ -33,7 +33,7 @@ They provide a strong interface but introduce port, startup, health and shutdown
 
 ### Kafka or RabbitMQ
 
-They would be disproportionate to a local single-user portfolio application.
+They would be disproportionate to a local single-user project application.
 
 ## Consequences
 

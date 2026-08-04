@@ -110,8 +110,8 @@
       "bytes": 92701
     },
     {
-      "file": "docs/assets/readme/05-analytics-json-evidence.png",
-      "description": "Versioned analytics JSON evidence",
+      "file": "docs/assets/readme/05-analytics-json-output.png",
+      "description": "Versioned analytics JSON output",
       "width": 1440,
       "height": 960,
       "bytes": 114046
@@ -124,8 +124,8 @@
       "bytes": 112898
     },
     {
-      "file": "docs/assets/readme/07-simulation-json-evidence.png",
-      "description": "Versioned simulation JSON evidence",
+      "file": "docs/assets/readme/07-simulation-json-output.png",
+      "description": "Versioned simulation JSON output",
       "width": 1440,
       "height": 960,
       "bytes": 84025

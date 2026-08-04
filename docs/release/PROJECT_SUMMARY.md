@@ -1,11 +1,11 @@
-# QueueForge Portfolio Summary
+# QueueForge Project Summary
 
 ## Product
 
 QueueForge is a complete local-first service operations simulator. A user can
 configure a queue scenario, execute one deterministic simulation or compare
 staffing options across repeated runs, observe the durable lifecycle and inspect
-versioned JSON evidence.
+versioned JSON output.
 
 ## Engineering coverage
 
@@ -28,7 +28,7 @@ versioned JSON evidence.
 - API end-to-end p95: 202.235 ms
 - final README screenshots: 8
 
-## Reliability evidence
+## Reliability checks
 
 The automated suite verifies bounded admission, HTTP 429, worker exit,
 worker timeout, API restart reconciliation and restoration of a successful
@@ -38,7 +38,7 @@ normal simulation.
 
 A reviewer can understand the project in this order:
 
-1. README product evidence
+1. README product screenshots
 2. architecture responsibilities
 3. reliability model
 4. quality and performance method

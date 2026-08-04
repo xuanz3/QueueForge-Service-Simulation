@@ -182,7 +182,7 @@ function AnalyticsResult({ result }: { result: JsonObject }) {
         })}
       </div>
       {variants.length === 0 && (
-        <p className="empty">The report completed, but no variant summary was recognised. Inspect the JSON evidence below.</p>
+        <p className="empty">The report completed, but no variant summary was recognised. Inspect the JSON output below.</p>
       )}
       <details className="raw-result">
         <summary>Inspect versioned analytics report</summary>
@@ -553,7 +553,7 @@ export default function App() {
       </main>
 
       <footer>
-        <span>QueueForge portfolio project</span>
+        <span>QueueForge software project</span>
         <span>Fictional scenario · not operational staffing advice</span>
       </footer>
     </div>

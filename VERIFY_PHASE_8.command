@@ -13,7 +13,7 @@ for attempt in {1..120}; do
   if curl -fsS http://localhost:18086/actuator/health/readiness >/dev/null \
       && curl -fsS http://localhost:15176 >/dev/null; then
     docker compose ps
-    echo "Phase 8 final release verification passed."
+    echo "Phase 8 release verification passed."
     exit 0
   fi
   sleep 1

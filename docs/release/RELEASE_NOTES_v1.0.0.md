@@ -1,6 +1,6 @@
 # QueueForge v1.0.0
 
-QueueForge v1.0.0 is the first complete portfolio release of the local-first
+QueueForge v1.0.0 is the first complete production release of the local-first
 service operations simulator.
 
 ## Included
@@ -13,7 +13,7 @@ service operations simulator.
 - bounded admission, cancellation, timeout and restart recovery
 - Actuator and Prometheus telemetry
 - cross-language quality and performance budgets
-- automated eight-image portfolio evidence
+- automated eight-image documented results
 
 ## Verification highlights
 
@@ -24,7 +24,7 @@ service operations simulator.
 - React production build and real API integration
 - capacity, worker failure, timeout and restart fault injection
 - ten performance regression gates
-- exact eight-image README evidence contract
+- exact eight-image README screenshot contract
 
 ## Reference environment
 

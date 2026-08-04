@@ -5,7 +5,7 @@
 
 ## Context
 
-The portfolio objective requires credible Java, Python and C++ evidence. Creating unrelated demonstrations would not show how the languages cooperate in a maintainable product.
+The project objective requires credible Java, Python and C++ evidence. Creating unrelated demonstrations would not show how the languages cooperate in a maintainable product.
 
 ## Decision
 
@@ -22,7 +22,7 @@ Every component must have tests that can run independently.
 
 ### Implement everything in Java
 
-This would reduce integration work but would not provide meaningful Python or C++ engineering evidence.
+This would reduce integration work but would not provide meaningful Python or C++ engineering criteria.
 
 ### Implement independent projects per language
 
@@ -37,7 +37,7 @@ This would be suitable for experimentation but would not demonstrate native perf
 Positive:
 
 - each language has a defensible responsibility
-- cross-language contracts become visible engineering evidence
+- cross-language contracts become visible engineering criteria
 - performance and reference implementations can be compared
 
 Negative:
