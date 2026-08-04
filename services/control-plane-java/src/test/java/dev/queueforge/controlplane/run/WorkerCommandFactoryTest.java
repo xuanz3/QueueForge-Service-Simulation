@@ -16,7 +16,8 @@ class WorkerCommandFactoryTest {
             "queueforge_analytics",
             Path.of("/bin/queueforge-sim"),
             Duration.ofMinutes(5),
-            2);
+            2,
+            4);
 
     @Test
     void createsSimulationCommandWithoutShellInterpolation() {

@@ -6,7 +6,7 @@ QueueForge combines a deterministic C++20 simulation engine, Python multi-seed a
 
 ## Current status
 
-**Phase 5 — React Product Interface**
+**Phase 6 — Reliability and Recovery**
 
 Implemented evidence:
 
@@ -58,6 +58,13 @@ The interface configures real versioned scenarios, submits simulation or
 analytics runs, follows persisted lifecycle state, supports cancellation and
 renders the returned evidence.
 
+## Reliability evidence
+
+Run `./VERIFY_PHASE_6.command` to exercise bounded admission, HTTP 429,
+worker failure, worker timeout, API restart reconciliation, Actuator readiness
+and Prometheus telemetry. The final step restores the normal stack and proves a
+new simulation succeeds.
+
 ## Architecture responsibilities
 
 | Component | Responsibility |
@@ -84,7 +91,7 @@ renders the returned evidence.
 3. C++ simulation engine — complete
 4. Python analytics — complete
 5. Java control plane — complete
-6. React product interface — in review
+6. React product interface — complete
 7. Reliability and fault handling
 8. Quality and performance
 9. Portfolio release

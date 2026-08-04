@@ -3,6 +3,7 @@ package dev.queueforge.controlplane.run;
 import java.net.URI;
 import java.time.Instant;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,26 @@ public class ApiExceptionHandler {
         return problem(HttpStatus.CONFLICT, "Run result unavailable", exception.getMessage());
     }
 
+    @ExceptionHandler(RunCapacityException.class)
+    ResponseEntity<ProblemDetail> capacity(RunCapacityException exception) {
+        ProblemDetail detail = detail(
+                HttpStatus.TOO_MANY_REQUESTS,
+                "Run capacity exhausted",
+                exception.getMessage());
+        detail.setProperty("capacity", exception.capacity());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, "2")
+                .body(detail);
+    }
+
     private static ResponseEntity<ProblemDetail> problem(
+            HttpStatus status,
+            String title,
+            String detail) {
+        return ResponseEntity.status(status).body(detail(status, title, detail));
+    }
+
+    private static ProblemDetail detail(
             HttpStatus status,
             String title,
             String detail) {
@@ -50,6 +70,6 @@ public class ApiExceptionHandler {
         problem.setTitle(title);
         problem.setType(URI.create("https://queueforge.dev/problems/" + status.value()));
         problem.setProperty("timestamp", Instant.now().toString());
-        return ResponseEntity.status(status).body(problem);
+        return problem;
     }
 }

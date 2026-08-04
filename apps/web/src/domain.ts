@@ -7,6 +7,12 @@ export type SystemStatus = {
   status: string;
   database: string;
   workers: Record<string, string>;
+  capacity?: {
+    maximum: number;
+    admitted: number;
+    available: number;
+  };
+  telemetry?: Record<string, number>;
 };
 
 export type Scenario = {

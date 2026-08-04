@@ -17,21 +17,15 @@ class RunServiceContextTest {
 
         try (AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext()) {
+            context.registerBean(RunRepository.class, () -> mock(RunRepository.class));
+            context.registerBean(ScenarioValidator.class, () -> mock(ScenarioValidator.class));
+            context.registerBean(WorkerProcessRunner.class, () -> mock(WorkerProcessRunner.class));
+            context.registerBean(JsonMapper.class, () -> mock(JsonMapper.class));
+            context.registerBean(ExecutorService.class, () -> executor);
             context.registerBean(
-                    RunRepository.class,
-                    () -> mock(RunRepository.class));
-            context.registerBean(
-                    ScenarioValidator.class,
-                    () -> mock(ScenarioValidator.class));
-            context.registerBean(
-                    WorkerProcessRunner.class,
-                    () -> mock(WorkerProcessRunner.class));
-            context.registerBean(
-                    JsonMapper.class,
-                    () -> mock(JsonMapper.class));
-            context.registerBean(
-                    ExecutorService.class,
-                    () -> executor);
+                    RunAdmissionController.class,
+                    () -> mock(RunAdmissionController.class));
+            context.registerBean(RunTelemetry.class, () -> mock(RunTelemetry.class));
             context.registerBean(RunService.class);
 
             context.refresh();
