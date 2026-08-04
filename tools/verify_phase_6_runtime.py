@@ -201,7 +201,15 @@ normal_terminal = wait_status(normal_run["id"], {"SUCCEEDED", "FAILED", "CANCELL
 assert normal_terminal["status"] == "SUCCEEDED", normal_terminal
 evidence["normalRun"] = normal_terminal
 
-prometheus_status, _, prometheus_body = request(API + "/actuator/prometheus")
+prometheus_status, _, prometheus_body = request(
+    API + "/actuator/prometheus",
+    headers={
+        "Accept": (
+            "text/plain;version=0.0.4;charset=utf-8,"
+            "application/openmetrics-text;version=1.0.0;charset=utf-8;q=0.9"
+        )
+    },
+)
 assert prometheus_status == 200, prometheus_status
 prometheus = prometheus_body.decode()
 for metric in [

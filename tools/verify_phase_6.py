@@ -17,6 +17,7 @@ REQUIRED_FILES = [
     "docs/operations/RELIABILITY_PLAYBOOK.md",
     "docs/testing/PHASE_6_VERIFICATION.md",
     "docs/testing/INCIDENT-011-STALE-RUNSERVICE-SIGNATURE-VERIFIER.md",
+    "docs/testing/INCIDENT-012-PROMETHEUS-CONTENT-NEGOTIATION.md",
     "VERIFY_PHASE_6.command",
 ]
 
@@ -106,5 +107,15 @@ for required in [
 
 if "production_signature = (" in phase4_verifier:
     raise SystemExit("Phase 4 still pins the historical RunService signature")
+
+for required in [
+    "text/plain;version=0.0.4;charset=utf-8",
+    "application/openmetrics-text;version=1.0.0;charset=utf-8",
+]:
+    if required not in runtime:
+        raise SystemExit(f"Prometheus media negotiation is missing: {required}")
+
+if 'request(API + "/actuator/prometheus")' in runtime:
+    raise SystemExit("Prometheus verification still requests the JSON default")
 
 print(f"Phase 6 repository verification passed ({len(REQUIRED_FILES)} required files).")
