@@ -1,10 +1,24 @@
 package dev.queueforge.controlplane;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-    @Override public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**").allowedOrigins("http://localhost:15176").allowedMethods("GET");
+    private final String webOrigin;
+
+    public WebConfiguration(@Value("${queueforge.web-origin:http://localhost:15176}") String webOrigin) {
+        this.webOrigin = webOrigin;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins(webOrigin)
+                .allowedMethods("GET", "POST", "OPTIONS")
+                .allowedHeaders("Content-Type", "Idempotency-Key")
+                .maxAge(3600);
     }
 }

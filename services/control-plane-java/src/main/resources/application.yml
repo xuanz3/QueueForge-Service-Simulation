@@ -5,14 +5,32 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:55436/queueforge}
     username: ${SPRING_DATASOURCE_USERNAME:queueforge}
     password: ${SPRING_DATASOURCE_PASSWORD:queueforge_local_only}
+  flyway:
+    enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,flyway
   endpoint:
     health:
       show-details: always
+
 server:
+  shutdown: graceful
   error:
     include-message: never
+
+queueforge:
+  web-origin: ${QUEUEFORGE_WEB_ORIGIN:http://localhost:15176}
+  work-root: ${QUEUEFORGE_WORK_ROOT:/var/lib/queueforge/runs}
+  workers:
+    simulation-command: ${QUEUEFORGE_SIMULATION_COMMAND:/usr/local/bin/queueforge-sim}
+    analytics-python: ${QUEUEFORGE_ANALYTICS_PYTHON:/usr/local/bin/python}
+    analytics-module: ${QUEUEFORGE_ANALYTICS_MODULE:queueforge_analytics}
+    analytics-engine: ${QUEUEFORGE_ANALYTICS_ENGINE:/usr/local/bin/queueforge-sim}
+    timeout: ${QUEUEFORGE_WORKER_TIMEOUT:PT5M}
+    max-concurrency: ${QUEUEFORGE_WORKER_CONCURRENCY:2}

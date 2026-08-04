@@ -21,16 +21,28 @@ services:
 
   api:
     build:
-      context: services/control-plane-java
+      context: .
+      dockerfile: services/control-plane-java/Dockerfile
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${QUEUEFORGE_POSTGRES_DB:-queueforge}
       SPRING_DATASOURCE_USERNAME: ${QUEUEFORGE_POSTGRES_USER:-queueforge}
       SPRING_DATASOURCE_PASSWORD: ${QUEUEFORGE_POSTGRES_PASSWORD:-queueforge_local_only}
+      QUEUEFORGE_WEB_ORIGIN: http://localhost:${QUEUEFORGE_WEB_PORT:-15176}
+      QUEUEFORGE_WORK_ROOT: /var/lib/queueforge/runs
+      QUEUEFORGE_SIMULATION_COMMAND: /usr/local/bin/queueforge-sim
+      QUEUEFORGE_ANALYTICS_PYTHON: /usr/local/bin/python
+      QUEUEFORGE_ANALYTICS_MODULE: queueforge_analytics
+      QUEUEFORGE_ANALYTICS_ENGINE: /usr/local/bin/queueforge-sim
+      QUEUEFORGE_WORKER_TIMEOUT: PT5M
+      QUEUEFORGE_WORKER_CONCURRENCY: 2
     ports:
       - "${QUEUEFORGE_API_PORT:-18086}:8080"
+    volumes:
+      - queueforge-runs:/var/lib/queueforge/runs
     depends_on:
       postgres:
         condition: service_healthy
+    stop_grace_period: 20s
 
   web:
     build:
@@ -64,3 +76,4 @@ services:
 
 volumes:
   queueforge-postgres:
+  queueforge-runs:
