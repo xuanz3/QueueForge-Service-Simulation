@@ -31,6 +31,7 @@ REQUIRED_FILES = [
     "docs/testing/INCIDENT-003-ZSH-STATUS-PARAMETER.md",
     "docs/testing/INCIDENT-004-ZSH-LOOP-LOCAL-OUTPUT.md",
     "docs/testing/INCIDENT-005-STALE-LIFECYCLE-VERIFIER.md",
+    "docs/testing/INCIDENT-006-CI-ZSH-INTERPRETER.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]
@@ -170,5 +171,28 @@ if "    local run_status\n" in wait_function:
     raise SystemExit(
         "Phase 4 lifecycle redeclares run_status inside the polling loop"
     )
+
+
+workflow = (ROOT / ".github/workflows/quality.yml").read_text(encoding="utf-8")
+job_start = workflow.index("  control-plane-integration:\n")
+job_end = workflow.index("\n  java:\n", job_start)
+control_plane_job = workflow[job_start:job_end]
+
+for required in [
+    "      - name: Install zsh\n",
+    "          sudo apt-get update\n",
+    "          sudo apt-get install -y zsh\n",
+    "      - name: Run Java, PostgreSQL, Python and C++ lifecycle demo\n",
+    "        run: ./RUN_CONTROL_PLANE_DEMO.command\n",
+]:
+    if required not in control_plane_job:
+        raise SystemExit(
+            f"Control-plane CI is missing zsh portability requirement: {required}"
+        )
+
+if control_plane_job.index("      - name: Install zsh\n") > control_plane_job.index(
+    "      - name: Run Java, PostgreSQL, Python and C++ lifecycle demo\n"
+):
+    raise SystemExit("Control-plane CI installs zsh after the lifecycle command")
 
 print(f"Phase 4 repository verification passed ({len(REQUIRED_FILES)} required files).")
