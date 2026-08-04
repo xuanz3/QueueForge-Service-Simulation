@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 project(queueforge_simulation VERSION 0.2.0 LANGUAGES CXX)
 
 option(QUEUEFORGE_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+option(QUEUEFORGE_WARNINGS_AS_ERRORS "Treat compiler warnings as build failures" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,6 +16,10 @@ function(queueforge_target_defaults target)
         -Wconversion
         -Wshadow
     )
+
+    if(QUEUEFORGE_WARNINGS_AS_ERRORS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${target} PRIVATE -Werror)
+    endif()
 
     if(QUEUEFORGE_ENABLE_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(${target} PRIVATE

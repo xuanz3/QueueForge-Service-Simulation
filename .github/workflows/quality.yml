@@ -152,6 +152,30 @@ jobs:
         run: ./VERIFY_PHASE_6.command
 
 
+
+  quality-performance:
+    name: Quality and performance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install zsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh
+      - name: Verify quality and performance
+        run: ./VERIFY_PHASE_7.command
+      - name: Upload performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase7-performance-evidence
+          path: runtime/phase7
+          if-no-files-found: warn
+
+
   java:
     name: Java tests
     runs-on: ubuntu-latest
@@ -210,5 +234,7 @@ jobs:
         run: python tools/verify_phase_5.py
       - name: Verify Phase 6
         run: python tools/verify_phase_6.py
+      - name: Verify Phase 7
+        run: python tools/verify_phase_7.py
       - name: Validate Compose
         run: docker compose config

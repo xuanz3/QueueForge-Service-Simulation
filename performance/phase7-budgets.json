@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "cpp": {
+    "iterations": 25,
+    "p95MillisecondsMax": 1500,
+    "deterministicRequired": true
+  },
+  "analytics": {
+    "runs": 20,
+    "elapsedSecondsMax": 60
+  },
+  "api": {
+    "runs": 12,
+    "concurrency": 4,
+    "successRateMin": 1.0,
+    "submitP95MillisecondsMax": 2000,
+    "endToEndP95MillisecondsMax": 15000
+  },
+  "web": {
+    "javascriptBytesMax": 1500000,
+    "cssBytesMax": 400000
+  },
+  "images": {
+    "apiBytesMax": 1500000000,
+    "webBytesMax": 150000000
+  }
+}
