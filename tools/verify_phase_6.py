@@ -16,8 +16,6 @@ REQUIRED_FILES = [
     "docs/architecture/RELIABILITY_MODEL.md",
     "docs/operations/RELIABILITY_PLAYBOOK.md",
     "docs/testing/PHASE_6_VERIFICATION.md",
-    "docs/testing/INCIDENT-011-STALE-RUNSERVICE-SIGNATURE-VERIFIER.md",
-    "docs/testing/INCIDENT-012-PROMETHEUS-CONTENT-NEGOTIATION.md",
     "VERIFY_PHASE_6.command",
 ]
 

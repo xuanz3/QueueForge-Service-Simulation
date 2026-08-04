@@ -37,9 +37,9 @@ QueueForge v1.0 is complete only when all conditions below are met.
 - At least one measured bottleneck is improved and retested.
 - No unmeasured speedup claim appears in the README.
 
-## Portfolio
+## Project
 
-- README evidence is generated from fixed demo data.
+- README screenshot is generated from fixed demo data.
 - No more than eight README images are used.
 - Architecture decisions and known limitations are visible.
 - A tagged v1.0 release can be rebuilt from a clean environment.

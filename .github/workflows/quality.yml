@@ -17,7 +17,7 @@ jobs:
       run:
         working-directory: engines/simulation-cpp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       - name: Build
@@ -38,7 +38,7 @@ jobs:
       run:
         working-directory: engines/simulation-cpp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Configure
         run: >
           cmake -S . -B build-sanitized
@@ -56,8 +56,8 @@ jobs:
       run:
         working-directory: analytics/queueforge-python
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install
@@ -71,8 +71,8 @@ jobs:
     name: Python and C++ analytics integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install analytics
@@ -99,8 +99,8 @@ jobs:
     name: Java control-plane integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install zsh
@@ -123,8 +123,8 @@ jobs:
     name: React product-interface integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install zsh
@@ -140,8 +140,8 @@ jobs:
     name: Reliability and recovery integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install zsh
@@ -157,8 +157,8 @@ jobs:
     name: Quality and performance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install zsh
@@ -167,22 +167,22 @@ jobs:
           sudo apt-get install -y zsh
       - name: Verify quality and performance
         run: ./VERIFY_PHASE_7.command
-      - name: Upload performance evidence
+      - name: Upload performance results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase7-performance-evidence
+          name: phase7-performance-results
           path: runtime/phase7
           if-no-files-found: warn
 
 
 
-  portfolio-release:
-    name: Final portfolio release
+  release-verification:
+    name: Release verification
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Install zsh
@@ -200,8 +200,8 @@ jobs:
       run:
         working-directory: services/control-plane-java
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
@@ -216,8 +216,8 @@ jobs:
       run:
         working-directory: apps/web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "24"
           cache: npm
@@ -231,8 +231,8 @@ jobs:
     name: Repository verification
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - name: Verify Phase 0

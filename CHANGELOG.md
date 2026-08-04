@@ -2,6 +2,15 @@
 
 All notable changes to QueueForge are documented here.
 
+## Unreleased
+
+### Changed
+
+- standardised public release and screenshot terminology
+- improved README screenshot framing and mobile layout
+- upgraded GitHub Actions to Node 24-compatible major versions
+- simplified project, release and contribution documentation
+
 ## [1.0.0] - 2026-08-05
 
 ### Added
@@ -14,9 +23,9 @@ All notable changes to QueueForge are documented here.
 - bounded run admission and structured HTTP 429 responses
 - worker cancellation, timeout and restart reconciliation
 - Actuator readiness and Prometheus telemetry
-- cross-language quality and performance regression gates
-- automated Playwright portfolio evidence
-- final eight-image README and GitHub release workflow
+- cross-language quality and performance regression checks
+- automated Playwright product screenshot capture
+- eight-image README and GitHub release workflow
 
 ### Verified
 
@@ -26,5 +35,5 @@ All notable changes to QueueForge are documented here.
 - Java unit and full lifecycle integration tests
 - real React-to-API product workflow
 - capacity, failure, timeout and restart fault injection
-- ten performance and size budgets
-- exact README evidence contract
+- ten performance and size checks
+- exact README screenshot contract

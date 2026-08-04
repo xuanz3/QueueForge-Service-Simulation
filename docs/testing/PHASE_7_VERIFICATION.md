@@ -36,7 +36,7 @@ runtime/phase7/performance-report.md
 runtime/phase7/staffing-comparison.json
 ```
 
-GitHub Actions uploads the directory as `phase7-performance-evidence`.
+GitHub Actions uploads the directory as `phase7-performance-results`.
 
 The budgets are regression guardrails, not production service-level
 objectives.

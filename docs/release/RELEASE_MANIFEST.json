@@ -1,12 +1,11 @@
 {
   "schemaVersion": "1.0",
   "release": "v1.0.0",
-  "generatedAt": "2026-08-04T16:36:17.278343+00:00",
-  "branch": "phase-8/final-release",
-  "sourceCommit": "1a9ae72f5a1f4f2e2e506bf69e3c6a766c3ed8e2",
+  "generatedAt": "2026-08-04T17:28:11.437281+00:00",
+  "documentationRevision": "670de306dadb2d6f79a9730d1001fc1a8a29c076",
   "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
   "performancePassed": true,
-  "performanceGates": [
+  "performanceChecks": [
     {
       "name": "cpp_determinism",
       "actual": true,
@@ -16,14 +15,14 @@
     },
     {
       "name": "cpp_p95",
-      "actual": 2.854,
+      "actual": 1.901,
       "budget": 1500,
       "unit": "ms",
       "passed": true
     },
     {
       "name": "analytics_elapsed",
-      "actual": 0.541,
+      "actual": 0.586,
       "budget": 60,
       "unit": "s",
       "passed": true
@@ -37,21 +36,21 @@
     },
     {
       "name": "api_submit_p95",
-      "actual": 81.461,
+      "actual": 81.8,
       "budget": 2000,
       "unit": "ms",
       "passed": true
     },
     {
       "name": "api_end_to_end_p95",
-      "actual": 202.235,
+      "actual": 199.79,
       "budget": 15000,
       "unit": "ms",
       "passed": true
     },
     {
       "name": "web_javascript_size",
-      "actual": 207947,
+      "actual": 207944,
       "budget": 1500000,
       "unit": "bytes",
       "passed": true
@@ -72,15 +71,15 @@
     },
     {
       "name": "web_image_size",
-      "actual": 21891795,
+      "actual": 21891910,
       "budget": 150000000,
       "unit": "bytes",
       "passed": true
     }
   ],
-  "reliabilityEvidencePresent": true,
-  "readmeImageCount": 8,
-  "images": [
+  "reliabilityReportPresent": true,
+  "readmeScreenshotCount": 8,
+  "screenshots": [
     {
       "file": "docs/assets/readme/01-product-overview.png",
       "description": "Product overview and local stack status",
@@ -91,9 +90,9 @@
     {
       "file": "docs/assets/readme/02-scenario-configuration.png",
       "description": "Scenario presets and operating assumptions",
-      "width": 1440,
-      "height": 960,
-      "bytes": 284203
+      "width": 912,
+      "height": 259,
+      "bytes": 26540
     },
     {
       "file": "docs/assets/readme/03-live-run-lifecycle.png",
@@ -110,25 +109,25 @@
       "bytes": 92701
     },
     {
-      "file": "docs/assets/readme/05-analytics-json-evidence.png",
-      "description": "Versioned analytics JSON evidence",
-      "width": 1440,
-      "height": 960,
-      "bytes": 114046
+      "file": "docs/assets/readme/05-analytics-json-output.png",
+      "description": "Versioned analytics JSON output",
+      "width": 1182,
+      "height": 484,
+      "bytes": 60568
     },
     {
       "file": "docs/assets/readme/06-simulation-kpis.png",
       "description": "Deterministic simulation KPI result",
       "width": 1440,
       "height": 960,
-      "bytes": 112898
+      "bytes": 112900
     },
     {
-      "file": "docs/assets/readme/07-simulation-json-evidence.png",
-      "description": "Versioned simulation JSON evidence",
-      "width": 1440,
-      "height": 960,
-      "bytes": 84025
+      "file": "docs/assets/readme/07-simulation-json-output.png",
+      "description": "Versioned simulation JSON output",
+      "width": 1182,
+      "height": 484,
+      "bytes": 38057
     },
     {
       "file": "docs/assets/readme/08-mobile-interface.png",

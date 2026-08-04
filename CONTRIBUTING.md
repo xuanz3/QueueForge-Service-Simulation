@@ -1,16 +1,14 @@
 # Contributing
 
-QueueForge is a portfolio project, but changes should follow the same evidence
-discipline as the original implementation.
-
 ## Development flow
 
 1. Create a focused branch from `main`.
 2. Open or reference an Issue.
 3. Keep commits scoped to one concern.
-4. Run the relevant phase verifier.
-5. Run `./VERIFY_PHASE_8.command` before requesting final review.
-6. Open a draft pull request with the verification evidence.
+4. Add or update tests for behavioural changes.
+5. Run the relevant phase verifier.
+6. Run `./VERIFY_PHASE_8.command` before requesting final review.
+7. Open a pull request with the checks performed and known limitations.
 
 ## Source expectations
 
@@ -18,9 +16,9 @@ discipline as the original implementation.
 - keep the C++ engine deterministic for fixed seeds
 - do not bypass Java validation or PostgreSQL lifecycle persistence
 - do not add generated runtime directories to Git
-- do not weaken reliability or performance budgets without an ADR
-- retain exactly eight README images unless a new release deliberately updates
-  the final evidence contract
+- document changes to reliability or performance budgets in an ADR
+- retain exactly eight README screenshots unless a release deliberately changes
+  the screenshot contract
 
 ## Commit examples
 

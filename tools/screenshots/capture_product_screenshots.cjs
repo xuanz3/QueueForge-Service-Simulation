@@ -4,20 +4,21 @@ const path = require("path");
 
 const root = process.cwd();
 const output = path.join(root, "docs", "assets", "readme");
-const baseUrl = process.env.QUEUEFORGE_PORTFOLIO_URL
+const baseUrl = process.env.QUEUEFORGE_SCREENSHOT_URL
   || "http://host.docker.internal:15177";
 
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
 
-const desktopShots = [
+const screenshots = [
   "01-product-overview.png",
   "02-scenario-configuration.png",
   "03-live-run-lifecycle.png",
   "04-staffing-comparison.png",
-  "05-analytics-json-evidence.png",
+  "05-analytics-json-output.png",
   "06-simulation-kpis.png",
-  "07-simulation-json-evidence.png",
+  "07-simulation-json-output.png",
+  "08-mobile-interface.png",
 ];
 
 const pause = (milliseconds) =>
@@ -42,10 +43,17 @@ async function scrollTo(page, locator, offset = 100) {
   await pause(150);
 }
 
-async function screenshot(page, name) {
+async function pageScreenshot(page, name) {
   await page.screenshot({
     path: path.join(output, name),
     fullPage: false,
+    animations: "disabled",
+  });
+}
+
+async function elementScreenshot(locator, name) {
+  await locator.screenshot({
+    path: path.join(output, name),
     animations: "disabled",
   });
 }
@@ -69,13 +77,16 @@ async function screenshot(page, name) {
     await installStableVisuals(page);
 
     await page.evaluate(() => window.scrollTo(0, 0));
-    await screenshot(page, desktopShots[0]);
+    await pageScreenshot(page, screenshots[0]);
 
     const scenarioHeading = page.getByRole("heading", {
       name: "Scenario preset",
     });
-    await scrollTo(page, scenarioHeading, 130);
-    await screenshot(page, desktopShots[1]);
+    const scenarioPanel = scenarioHeading.locator(
+      "xpath=ancestor::section[contains(@class,'panel')][1]"
+    );
+    await scrollTo(page, scenarioPanel, 90);
+    await elementScreenshot(scenarioPanel, screenshots[1]);
 
     const runsInput = page
       .locator("label.field")
@@ -89,19 +100,19 @@ async function screenshot(page, name) {
     await scrollTo(page, compareButton, 180);
     await compareButton.click();
     await page.locator(".run-card").waitFor({ timeout: 30000 });
-    await screenshot(page, desktopShots[2]);
+    await pageScreenshot(page, screenshots[2]);
 
     const staffingHeading = page.getByRole("heading", {
       name: "Staffing comparison",
     });
     await staffingHeading.waitFor({ timeout: 120000 });
     await scrollTo(page, staffingHeading, 110);
-    await screenshot(page, desktopShots[3]);
+    await pageScreenshot(page, screenshots[3]);
 
     const analyticsDetails = page.locator("details.raw-result").last();
     await analyticsDetails.locator("summary").click();
-    await scrollTo(page, analyticsDetails, 100);
-    await screenshot(page, desktopShots[4]);
+    await scrollTo(page, analyticsDetails, 90);
+    await elementScreenshot(analyticsDetails, screenshots[4]);
 
     const simulationTab = page.getByRole("tab", {
       name: "Single simulation",
@@ -120,12 +131,12 @@ async function screenshot(page, name) {
     });
     await queueHeading.waitFor({ timeout: 120000 });
     await scrollTo(page, queueHeading, 110);
-    await screenshot(page, desktopShots[5]);
+    await pageScreenshot(page, screenshots[5]);
 
     const simulationDetails = page.locator("details.raw-result").last();
     await simulationDetails.locator("summary").click();
-    await scrollTo(page, simulationDetails, 100);
-    await screenshot(page, desktopShots[6]);
+    await scrollTo(page, simulationDetails, 90);
+    await elementScreenshot(simulationDetails, screenshots[6]);
 
     await desktop.close();
 
@@ -146,7 +157,7 @@ async function screenshot(page, name) {
     });
     await installStableVisuals(mobilePage);
     await mobilePage.evaluate(() => window.scrollTo(0, 0));
-    await screenshot(mobilePage, "08-mobile-interface.png");
+    await pageScreenshot(mobilePage, screenshots[7]);
     await mobile.close();
   } finally {
     await browser.close();
@@ -157,18 +168,13 @@ async function screenshot(page, name) {
     .filter((name) => name.endsWith(".png"))
     .sort();
 
-  const expected = [
-    ...desktopShots,
-    "08-mobile-interface.png",
-  ];
-
-  if (JSON.stringify(files) !== JSON.stringify(expected)) {
+  if (JSON.stringify(files) !== JSON.stringify(screenshots)) {
     throw new Error(
-      `Expected exactly ${expected.length} screenshots, found: ${files.join(", ")}`
+      `Expected exactly ${screenshots.length} screenshots, found: ${files.join(", ")}`
     );
   }
 
-  console.log(`Captured ${files.length} QueueForge portfolio screenshots.`);
+  console.log(`Captured ${files.length} QueueForge product screenshots.`);
 })().catch((error) => {
   console.error(error);
   process.exit(1);

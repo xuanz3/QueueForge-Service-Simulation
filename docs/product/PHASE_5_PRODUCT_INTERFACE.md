@@ -18,7 +18,7 @@ results.
 5. Submit the run and observe QUEUED, RUNNING and terminal state.
 6. Cancel a long-running analysis when required.
 7. Review simulation metrics or compare staffing variants.
-8. Inspect the complete versioned JSON evidence.
+8. Inspect the complete versioned JSON output.
 
 ## Interface principles
 

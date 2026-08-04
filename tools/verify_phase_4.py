@@ -27,11 +27,6 @@ REQUIRED_FILES = [
     "docs/operations/RUN_LIFECYCLE.md",
     "docs/testing/PHASE_4_VERIFICATION.md",
     "services/control-plane-java/src/test/java/dev/queueforge/controlplane/run/RunServiceContextTest.java",
-    "docs/testing/INCIDENT-002-SPRING-CONSTRUCTOR-SELECTION.md",
-    "docs/testing/INCIDENT-003-ZSH-STATUS-PARAMETER.md",
-    "docs/testing/INCIDENT-004-ZSH-LOOP-LOCAL-OUTPUT.md",
-    "docs/testing/INCIDENT-005-STALE-LIFECYCLE-VERIFIER.md",
-    "docs/testing/INCIDENT-006-CI-ZSH-INTERPRETER.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]

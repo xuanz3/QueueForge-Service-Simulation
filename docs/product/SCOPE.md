@@ -18,7 +18,7 @@
 - JSON, CSV and HTML result export
 - PostgreSQL persistence
 - Local Docker-based execution
-- Automated README evidence generation
+- Automated README screenshot generation
 
 ## Excluded from v1.0
 

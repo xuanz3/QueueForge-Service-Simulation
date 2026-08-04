@@ -1,10 +1,10 @@
 #!/bin/zsh
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-PORTFOLIO_PORT=15177
+SCREENSHOT_PORT=15177
 PLAYWRIGHT_IMAGE="mcr.microsoft.com/playwright:v1.55.0-noble"
 
 restore_normal_stack() {
@@ -22,19 +22,19 @@ docker compose config >/dev/null
 ./VERIFY_PHASE_6.command
 ./RUN_PHASE_7_BENCHMARK.command
 
-export QUEUEFORGE_WEB_PORT="$PORTFOLIO_PORT"
+export QUEUEFORGE_WEB_PORT="$SCREENSHOT_PORT"
 docker compose \
   -f compose.yaml \
-  -f compose.portfolio.yaml \
+  -f compose.screenshots.yaml \
   up -d --build --force-recreate postgres api web
 
 for attempt in {1..120}; do
   if curl -fsS http://localhost:18086/actuator/health/readiness >/dev/null \
-      && curl -fsS "http://localhost:${PORTFOLIO_PORT}" >/dev/null; then
+      && curl -fsS "http://localhost:${SCREENSHOT_PORT}" >/dev/null; then
     break
   fi
   if [ "$attempt" -eq 120 ]; then
-    echo "Portfolio evidence stack did not become ready." >&2
+    echo "Screenshot stack did not become ready." >&2
     exit 1
   fi
   sleep 1
@@ -46,7 +46,7 @@ docker run --rm \
   --add-host=host.docker.internal:host-gateway \
   -e HOME=/tmp/queueforge-home \
   -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-  -e QUEUEFORGE_PORTFOLIO_URL="http://host.docker.internal:${PORTFOLIO_PORT}" \
+  -e QUEUEFORGE_SCREENSHOT_URL="http://host.docker.internal:${SCREENSHOT_PORT}" \
   -v "$ROOT:/work" \
   -w /work \
   "$PLAYWRIGHT_IMAGE" \
@@ -54,13 +54,13 @@ docker run --rm \
     mkdir -p "$HOME" /tmp/queueforge-pw
     npm install --prefix /tmp/queueforge-pw --no-save playwright@1.55.0 >/dev/null
     NODE_PATH=/tmp/queueforge-pw/node_modules \
-      node tools/evidence/capture_portfolio.cjs
+      node tools/screenshots/capture_product_screenshots.cjs
   '
 
-python3 tools/evidence/render_release_docs.py
-python3 tools/verify_phase_8_assets.py
+python3 tools/release/render_release_docs.py
+python3 tools/verify_release_screenshots.py
 
 trap - EXIT
 restore_normal_stack
 
-echo "QueueForge portfolio evidence generation passed."
+echo "QueueForge screenshot capture passed."
