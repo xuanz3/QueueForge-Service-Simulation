@@ -1,21 +1,32 @@
 # Contributing
 
-Development is organised by phases.
+QueueForge is a portfolio project, but changes should follow the same evidence
+discipline as the original implementation.
 
-Each change should:
+## Development flow
 
-1. reference an Issue
-2. use a focused branch
-3. include tests or explain why tests are not applicable
-4. update relevant documentation
-5. avoid unrelated formatting changes
-6. state known limitations
+1. Create a focused branch from `main`.
+2. Open or reference an Issue.
+3. Keep commits scoped to one concern.
+4. Run the relevant phase verifier.
+5. Run `./VERIFY_PHASE_8.command` before requesting final review.
+6. Open a draft pull request with the verification evidence.
 
-Commit examples:
+## Source expectations
+
+- preserve versioned input and result contracts
+- keep the C++ engine deterministic for fixed seeds
+- do not bypass Java validation or PostgreSQL lifecycle persistence
+- do not add generated runtime directories to Git
+- do not weaken reliability or performance budgets without an ADR
+- retain exactly eight README images unless a new release deliberately updates
+  the final evidence contract
+
+## Commit examples
 
 ```text
-feat(cpp): implement deterministic event ordering
-test(python): cover staffing comparison confidence interval
-fix(java): terminate timed-out simulation process
-docs(adr): record worker process boundary
+feat(engine): add a queue discipline
+fix(control-plane): preserve cancellation state
+test(performance): add a regression workload
+docs(release): clarify benchmark limitations
 ```

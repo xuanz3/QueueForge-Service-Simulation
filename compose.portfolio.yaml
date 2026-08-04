@@ -1,0 +1,9 @@
+services:
+  api:
+    environment:
+      QUEUEFORGE_WEB_ORIGIN: http://host.docker.internal:15177
+
+  web:
+    build:
+      args:
+        VITE_API_BASE_URL: http://host.docker.internal:18086
