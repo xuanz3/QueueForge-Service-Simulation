@@ -1,119 +1,146 @@
 # QueueForge
 
-> A local-first service operations simulator that helps teams evaluate queue behaviour and staffing decisions before changing real operations.
+QueueForge is a local-first service operations simulator for testing queue and
+staffing decisions before they affect real operations. It combines a
+deterministic C++20 simulation engine, Python multi-seed analytics, a Java
+control plane, PostgreSQL persistence and a React interface.
 
-QueueForge combines a deterministic C++20 simulation engine, Python multi-seed analytics and a Java control plane that persists and supervises worker execution.
+## Product evidence
 
-## Current status
+<table>
+<tr>
+  <td width="50%"><img src="docs/assets/readme/01-product-overview.png" alt="Product overview and local stack status" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/02-scenario-configuration.png" alt="Scenario presets and operating assumptions" width="100%"></td>
+</tr>
+<tr>
+  <td><sub>Product overview and local stack status</sub></td>
+  <td><sub>Scenario presets and operating assumptions</sub></td>
+</tr>
+<tr>
+  <td width="50%"><img src="docs/assets/readme/03-live-run-lifecycle.png" alt="Persisted live run lifecycle" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/04-staffing-comparison.png" alt="Multi-seed staffing comparison" width="100%"></td>
+</tr>
+<tr>
+  <td><sub>Persisted live run lifecycle</sub></td>
+  <td><sub>Multi-seed staffing comparison</sub></td>
+</tr>
+<tr>
+  <td width="50%"><img src="docs/assets/readme/05-analytics-json-evidence.png" alt="Versioned analytics JSON evidence" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/06-simulation-kpis.png" alt="Deterministic simulation KPI result" width="100%"></td>
+</tr>
+<tr>
+  <td><sub>Versioned analytics JSON evidence</sub></td>
+  <td><sub>Deterministic simulation KPI result</sub></td>
+</tr>
+<tr>
+  <td width="50%"><img src="docs/assets/readme/07-simulation-json-evidence.png" alt="Versioned simulation JSON evidence" width="100%"></td>
+  <td width="50%"><img src="docs/assets/readme/08-mobile-interface.png" alt="Responsive mobile interface" width="100%"></td>
+</tr>
+<tr>
+  <td><sub>Versioned simulation JSON evidence</sub></td>
+  <td><sub>Responsive mobile interface</sub></td>
+</tr>
+</table>
 
-**Phase 7 — Quality and Performance**
+## What the system proves
 
-Implemented evidence:
+- versioned queue scenarios can be validated and reproduced
+- fixed seeds produce deterministic C++ results
+- Python can compare staffing options across repeated simulations
+- Java persists and supervises worker execution
+- PostgreSQL retains lifecycle and result evidence across restarts
+- bounded admission returns explicit HTTP 429 responses under saturation
+- worker failure, timeout, cancellation and control-plane restart are recoverable
+- the React product interface uses the real API rather than mock data
 
-- asynchronous simulation and analytics REST API
-- PostgreSQL run lifecycle persistence
-- Flyway database migration
-- Java validation of versioned scenario input
-- bounded C++ and Python process orchestration
-- timeout, cancellation and restart recovery
-- stable lifecycle states and error codes
-- completed result retrieval after API restart
-- Docker integration testing across all three languages
-
-The application now supports an end-to-end local product workflow. Reliability and fault handling are complete. Phase 7 adds portable quality and performance regression evidence.
-
-## Run the control-plane demo
-
-Start Docker Desktop, then run:
-
-```bash
-./VERIFY_PHASE_4.command
-```
-
-API endpoints:
-
-```text
-GET  http://localhost:18086/api/system/status
-POST http://localhost:18086/api/runs
-GET  http://localhost:18086/api/runs/{id}
-GET  http://localhost:18086/api/runs/{id}/result
-POST http://localhost:18086/api/runs/{id}/cancel
-```
-
-Generated integration evidence is written to:
-
-```text
-runtime/phase4/
-```
-
-## Product interface
-
-Open `http://localhost:15176` after running:
-
-```bash
-./VERIFY_PHASE_5.command
-```
-
-The interface configures real versioned scenarios, submits simulation or
-analytics runs, follows persisted lifecycle state, supports cancellation and
-renders the returned evidence.
-
-## Reliability evidence
-
-Run `./VERIFY_PHASE_6.command` to exercise bounded admission, HTTP 429,
-worker failure, worker timeout, API restart reconciliation, Actuator readiness
-and Prometheus telemetry. The final step restores the normal stack and proves a
-new simulation succeeds.
-
-## Quality and performance evidence
-
-Run:
-
-```bash
-./VERIFY_PHASE_7.command
-```
-
-The gate compiles C++ with warnings treated as errors, runs cross-language
-quality checks, measures fixed-seed determinism, benchmarks Python analytics
-and concurrent API lifecycles, and enforces Web bundle and Docker image
-budgets. Generated JSON and Markdown reports remain environment-specific and
-are uploaded by CI as `phase7-performance-evidence`.
-
-## Architecture responsibilities
+## Architecture
 
 | Component | Responsibility |
 |---|---|
-| C++20 | Deterministic event simulation |
-| Python | Repeated experiments, uncertainty and reports |
-| Java / Spring Boot | Validation, lifecycle, process control and persistence |
-| PostgreSQL | Durable run metadata, request and result evidence |
-| React / TypeScript | Scenario configuration and result review |
+| React + TypeScript | Scenario configuration, run tracking and evidence review |
+| Java + Spring Boot | Validation, bounded admission, lifecycle and process control |
+| PostgreSQL + Flyway | Durable request, status, error and result persistence |
+| Python | Multi-seed experiments, statistics and staffing recommendation |
+| C++20 | Deterministic discrete-event queue simulation |
+| Docker Compose | Reproducible local product and verification environment |
+| GitHub Actions | Cross-language build, integration, reliability and performance gates |
 
-## Evidence
+## Reference verification
 
+The values below were generated by `./VERIFY_PHASE_7.command` through the
+normal Docker product stack. They are regression evidence from the recorded
+environment, not production service-level objectives.
+
+| Gate | Measured result |
+|---|---:|
+| C++ deterministic output | PASS |
+| C++ p95 execution | 2.854 ms |
+| Python staffing analysis | 0.541 s |
+| API simulation success | 100% |
+| API submit p95 | 81.461 ms |
+| API end-to-end p95 | 202.235 ms |
+| Production JavaScript | 207,947 bytes |
+| Production CSS | 9,018 bytes |
+| API image | 150,540,420 bytes |
+| Web image | 21,891,795 bytes |
+
+## Run locally
+
+Requirements:
+
+- Docker Desktop
+- Git
+- Python 3
+- zsh on macOS/Linux
+
+Start and verify the complete product:
+
+```bash
+./VERIFY_PHASE_8.command
+```
+
+Open:
+
+```text
+http://localhost:15176
+```
+
+The verification commands deliberately use Docker for C++, Java, Node,
+PostgreSQL and browser evidence so the host machine does not require those
+toolchains directly.
+
+## Evidence and documentation
+
+- [System architecture](docs/architecture/CONTROL_PLANE.md)
+- [Reliability model](docs/architecture/RELIABILITY_MODEL.md)
 - [Quality policy](docs/quality/QUALITY_POLICY.md)
 - [Performance method](docs/performance/PERFORMANCE_METHOD.md)
-- [Performance budget decision](docs/decisions/ADR-006-performance-budgets.md)
-- [Phase 7 verification](docs/testing/PHASE_7_VERIFICATION.md)
-- [Control-plane architecture](docs/architecture/CONTROL_PLANE.md)
-- [Local process orchestration decision](docs/decisions/ADR-005-local-process-orchestration.md)
 - [Run lifecycle](docs/operations/RUN_LIFECYCLE.md)
-- [Phase 4 verification](docs/testing/PHASE_4_VERIFICATION.md)
-- [Python experiment method](docs/analytics/EXPERIMENT_METHOD.md)
-- [C++ engine design](docs/architecture/ENGINE_DESIGN.md)
+- [Reliability playbook](docs/operations/RELIABILITY_PLAYBOOK.md)
+- [Release summary](docs/release/PORTFOLIO_SUMMARY.md)
+- [v1.0.0 release notes](docs/release/RELEASE_NOTES_v1.0.0.md)
+- [Final verification contract](docs/testing/PHASE_8_VERIFICATION.md)
 
-## Planned phases
+## Delivery history
 
-1. Product definition — complete
-2. Repository and local environment — complete
-3. C++ simulation engine — complete
-4. Python analytics — complete
-5. Java control plane — complete
-6. React product interface — complete
-7. Reliability and fault handling — complete
-8. Quality and performance — in review
-9. Portfolio release
+1. Product definition
+2. Repository and local environment
+3. C++ simulation engine
+4. Python analytics
+5. Java control plane
+6. React product interface
+7. Reliability and fault handling
+8. Quality and performance
+9. Final portfolio release
 
-## Evidence policy
+All phases are complete in `v1.0.0`.
 
-Performance, reliability and staffing claims are published only with their input, engine version, seed schedule, environment and limitations.
+## Scope and limitations
+
+QueueForge is a portfolio-grade local product. It does not claim distributed
+worker coordination, cloud-scale capacity or operational staffing advice.
+Performance values depend on the recorded host, Docker version and workload.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
