@@ -6,7 +6,7 @@ QueueForge combines a deterministic C++20 simulation engine, Python multi-seed a
 
 ## Current status
 
-**Phase 4 — Java Control Plane**
+**Phase 5 — React Product Interface**
 
 Implemented evidence:
 
@@ -20,7 +20,7 @@ Implemented evidence:
 - completed result retrieval after API restart
 - Docker integration testing across all three languages
 
-The application remains local-first and unauthenticated. Reliability hardening and the complete React workflow belong to later phases.
+The application now supports an end-to-end local product workflow. Reliability hardening and failure injection belong to Phase 6.
 
 ## Run the control-plane demo
 
@@ -45,6 +45,18 @@ Generated integration evidence is written to:
 ```text
 runtime/phase4/
 ```
+
+## Product interface
+
+Open `http://localhost:15176` after running:
+
+```bash
+./VERIFY_PHASE_5.command
+```
+
+The interface configures real versioned scenarios, submits simulation or
+analytics runs, follows persisted lifecycle state, supports cancellation and
+renders the returned evidence.
 
 ## Architecture responsibilities
 
@@ -71,8 +83,8 @@ runtime/phase4/
 2. Repository and local environment — complete
 3. C++ simulation engine — complete
 4. Python analytics — complete
-5. Java control plane — in review
-6. React product interface
+5. Java control plane — complete
+6. React product interface — in review
 7. Reliability and fault handling
 8. Quality and performance
 9. Portfolio release

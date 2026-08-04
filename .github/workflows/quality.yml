@@ -118,6 +118,23 @@ jobs:
       - name: Run Java, PostgreSQL, Python and C++ lifecycle demo
         run: ./RUN_CONTROL_PLANE_DEMO.command
 
+
+  product-ui-integration:
+    name: React product-interface integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install zsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh
+      - name: Verify product interface
+        run: ./VERIFY_PHASE_5.command
+
+
   java:
     name: Java tests
     runs-on: ubuntu-latest
@@ -151,6 +168,9 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Verify Phase 5 source
+        working-directory: ../..
+        run: python tools/verify_phase_5.py
 
   repository:
     name: Repository verification
@@ -172,5 +192,7 @@ jobs:
         run: python tools/verify_phase_3.py
       - name: Verify Phase 4
         run: python tools/verify_phase_4.py
+      - name: Verify Phase 5
+        run: python tools/verify_phase_5.py
       - name: Validate Compose
         run: docker compose config
