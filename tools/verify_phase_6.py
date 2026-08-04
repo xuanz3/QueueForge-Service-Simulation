@@ -16,6 +16,7 @@ REQUIRED_FILES = [
     "docs/architecture/RELIABILITY_MODEL.md",
     "docs/operations/RELIABILITY_PLAYBOOK.md",
     "docs/testing/PHASE_6_VERIFICATION.md",
+    "docs/testing/INCIDENT-011-STALE-RUNSERVICE-SIGNATURE-VERIFIER.md",
     "VERIFY_PHASE_6.command",
 ]
 
@@ -93,5 +94,17 @@ if "python tools/verify_phase_6.py" not in workflow:
     raise SystemExit("Repository CI does not verify Phase 6")
 if "reliability-integration:" not in workflow:
     raise SystemExit("Quality workflow is missing the Phase 6 reliability job")
+
+phase4_verifier = (ROOT / "tools/verify_phase_4.py").read_text(encoding="utf-8")
+for required in [
+    "autowired_constructor_start",
+    "RunAdmissionController admission",
+    "RunTelemetry telemetry",
+]:
+    if required not in phase4_verifier:
+        raise SystemExit(f"Constructor verifier compatibility is missing: {required}")
+
+if "production_signature = (" in phase4_verifier:
+    raise SystemExit("Phase 4 still pins the historical RunService signature")
 
 print(f"Phase 6 repository verification passed ({len(REQUIRED_FILES)} required files).")

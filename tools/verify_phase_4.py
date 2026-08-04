@@ -92,18 +92,31 @@ run_service = (
 if "import org.springframework.beans.factory.annotation.Autowired;" not in run_service:
     raise SystemExit("RunService is missing the Autowired constructor import")
 
-production_signature = (
+autowired_constructor_start = (
     "    @Autowired\n"
     "    public RunService(\n"
-    "            RunRepository repository,\n"
-    "            ScenarioValidator validator,\n"
-    "            WorkerProcessRunner workerRunner,\n"
-    "            JsonMapper jsonMapper,\n"
-    "            ExecutorService executor) {"
 )
 
-if production_signature not in run_service:
+if autowired_constructor_start not in run_service:
     raise SystemExit("RunService production constructor is not explicitly autowired")
+
+constructor_start = run_service.index(autowired_constructor_start)
+constructor_end = run_service.index(") {", constructor_start)
+production_constructor = run_service[constructor_start:constructor_end]
+
+for dependency in [
+    "RunRepository repository",
+    "ScenarioValidator validator",
+    "WorkerProcessRunner workerRunner",
+    "JsonMapper jsonMapper",
+    "ExecutorService executor",
+    "RunAdmissionController admission",
+    "RunTelemetry telemetry",
+]:
+    if dependency not in production_constructor:
+        raise SystemExit(
+            f"RunService production constructor is missing dependency: {dependency}"
+        )
 
 context_test = (
     ROOT
