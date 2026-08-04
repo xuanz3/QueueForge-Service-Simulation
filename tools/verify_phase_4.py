@@ -30,6 +30,7 @@ REQUIRED_FILES = [
     "docs/testing/INCIDENT-002-SPRING-CONSTRUCTOR-SELECTION.md",
     "docs/testing/INCIDENT-003-ZSH-STATUS-PARAMETER.md",
     "docs/testing/INCIDENT-004-ZSH-LOOP-LOCAL-OUTPUT.md",
+    "docs/testing/INCIDENT-005-STALE-LIFECYCLE-VERIFIER.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]
@@ -137,7 +138,6 @@ for unsafe in [
         )
 
 for required in [
-    "    local run_status\n",
     '    run_status="$(python3 - "$response_file"',
     '    case "$run_status" in',
     '        echo "$run_status"',
