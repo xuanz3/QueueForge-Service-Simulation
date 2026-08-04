@@ -82,15 +82,15 @@ wait_for_terminal() {
   local response_file="$2"
   for attempt in {1..180}; do
     curl -fsS "http://localhost:18086/api/runs/$run_id" > "$response_file"
-    local status
-    status="$(python3 - "$response_file" <<'PY_STATUS'
+    local run_status
+    run_status="$(python3 - "$response_file" <<'PY_STATUS'
 import json, sys
 print(json.load(open(sys.argv[1]))["status"])
 PY_STATUS
 )"
-    case "$status" in
+    case "$run_status" in
       SUCCEEDED|FAILED|CANCELLED)
-        echo "$status"
+        echo "$run_status"
         return 0
         ;;
     esac

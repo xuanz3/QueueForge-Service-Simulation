@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     "docs/testing/PHASE_4_VERIFICATION.md",
     "services/control-plane-java/src/test/java/dev/queueforge/controlplane/run/RunServiceContextTest.java",
     "docs/testing/INCIDENT-002-SPRING-CONSTRUCTOR-SELECTION.md",
+    "docs/testing/INCIDENT-003-ZSH-STATUS-PARAMETER.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]
@@ -116,6 +117,33 @@ for required in [
     if required not in context_test:
         raise SystemExit(
             f"RunService context regression test is missing requirement: {required}"
+        )
+
+
+demo_script = (ROOT / "RUN_CONTROL_PLANE_DEMO.command").read_text(
+    encoding="utf-8"
+)
+
+for unsafe in [
+    "    local status\n",
+    '    status="$(python3 - "$response_file"',
+    '    case "$status" in',
+    '        echo "$status"',
+]:
+    if unsafe in demo_script:
+        raise SystemExit(
+            f"Phase 4 lifecycle script uses zsh read-only status parameter: {unsafe}"
+        )
+
+for required in [
+    "    local run_status\n",
+    '    run_status="$(python3 - "$response_file"',
+    '    case "$run_status" in',
+    '        echo "$run_status"',
+]:
+    if required not in demo_script:
+        raise SystemExit(
+            f"Phase 4 lifecycle script is missing safe run status handling: {required}"
         )
 
 print(f"Phase 4 repository verification passed ({len(REQUIRED_FILES)} required files).")
