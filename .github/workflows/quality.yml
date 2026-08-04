@@ -94,6 +94,26 @@ jobs:
       - name: Verify integration report
         run: python tools/verify_phase_3_report.py runtime/phase3-ci/staffing-comparison.json
 
+
+  control-plane-integration:
+    name: Java control-plane integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Verify repository contracts
+        run: |
+          python tools/verify_phase_0.py
+          python tools/verify_phase_1.py
+          python tools/verify_cpp_runtime.py
+          python tools/verify_phase_2.py
+          python tools/verify_phase_3.py
+          python tools/verify_phase_4.py
+      - name: Run Java, PostgreSQL, Python and C++ lifecycle demo
+        run: ./RUN_CONTROL_PLANE_DEMO.command
+
   java:
     name: Java tests
     runs-on: ubuntu-latest
@@ -146,5 +166,7 @@ jobs:
         run: python tools/verify_phase_2.py
       - name: Verify Phase 3
         run: python tools/verify_phase_3.py
+      - name: Verify Phase 4
+        run: python tools/verify_phase_4.py
       - name: Validate Compose
         run: docker compose config
