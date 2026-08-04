@@ -1,13 +1,20 @@
 [build-system]
 requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
+
 [project]
 name = "queueforge-analytics"
-version = "0.1.0"
-description = "QueueForge analytics foundation"
+version = "0.2.0"
+description = "Repeated QueueForge experiments, statistics and auditable reports"
 requires-python = ">=3.14"
+authors = [{ name = "Xuanze Chen" }]
 license = "MIT"
+
+[project.scripts]
+queueforge-analytics = "queueforge_analytics.__main__:main"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
 where = ["src"]

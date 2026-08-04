@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://queueforge.dev/contracts/analytics-report.schema.json",
+  "title": "QueueForge Staffing Comparison Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "analyticsVersion",
+    "generatedAt",
+    "scenario",
+    "experiment",
+    "targetPolicy",
+    "decisionRule",
+    "recommendation",
+    "variants",
+    "runs",
+    "limitations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "analyticsVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scenario": {
+      "type": "object"
+    },
+    "experiment": {
+      "type": "object",
+      "required": [
+        "runCountPerVariant",
+        "seedStart",
+        "seedEnd",
+        "commonRandomNumbers",
+        "serverCounts"
+      ],
+      "properties": {
+        "runCountPerVariant": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "seedStart": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "seedEnd": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "commonRandomNumbers": {
+          "const": true
+        },
+        "serverCounts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "targetPolicy": {
+      "type": "object",
+      "required": [
+        "p95_wait_minutes",
+        "maximum_queue_length",
+        "maximum_utilisation",
+        "required_success_rate"
+      ]
+    },
+    "decisionRule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recommendation": {
+      "type": "object",
+      "required": [
+        "status",
+        "serverCount",
+        "statement"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "meets_demo_target",
+            "no_tested_variant_meets_demo_target"
+          ]
+        },
+        "serverCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1
+    },
+    "runs": {
+      "type": "array",
+      "minItems": 2
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
