@@ -22,6 +22,7 @@ REQUIRED_FILES = [
     "tools/verify_phase_8_assets.py",
     "docs/decisions/ADR-007-automated-portfolio-evidence.md",
     "docs/testing/PHASE_8_VERIFICATION.md",
+    "docs/testing/INCIDENT-013-PHASE7-README-VERIFIER-AT-FINAL-RELEASE.md",
     "docs/release/PORTFOLIO_SUMMARY.md",
     "docs/release/RELEASE_NOTES_v1.0.0.md",
     "docs/release/RELEASE_MANIFEST.json",
@@ -122,5 +123,22 @@ if len(tracked) != 8:
 
 if any(not path.endswith(".png") for path in tracked):
     raise SystemExit("README asset directory contains a tracked non-PNG file")
+
+phase7_verifier = (ROOT / "tools/verify_phase_7.py").read_text(
+    encoding="utf-8"
+)
+for marker in [
+    "phase7_review_markers",
+    "final_release_markers",
+    "phase7_review_state",
+    "final_release_state",
+]:
+    if marker not in phase7_verifier:
+        raise SystemExit(
+            f"Phase 7 final-README compatibility is missing: {marker}"
+        )
+
+if "README Phase 7 status is missing" in phase7_verifier:
+    raise SystemExit("Phase 7 still pins the temporary README status")
 
 print(f"Phase 8 final release verification passed ({len(REQUIRED_FILES)} required files).")

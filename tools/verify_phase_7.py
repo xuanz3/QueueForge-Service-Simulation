@@ -107,11 +107,29 @@ for marker in [
         raise SystemExit(f"Phase 7 workflow integration is missing: {marker}")
 
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
-for marker in [
+
+phase7_review_markers = [
     "**Phase 7 — Quality and Performance**",
     "8. Quality and performance — in review",
-]:
-    if marker not in readme:
-        raise SystemExit(f"README Phase 7 status is missing: {marker}")
+]
+final_release_markers = [
+    "# QueueForge",
+    "## Product evidence",
+    "## Reference verification",
+    "All phases are complete in `v1.0.0`.",
+    "docs/release/RELEASE_NOTES_v1.0.0.md",
+]
+
+phase7_review_state = all(
+    marker in readme for marker in phase7_review_markers
+)
+final_release_state = all(
+    marker in readme for marker in final_release_markers
+)
+
+if not (phase7_review_state or final_release_state):
+    raise SystemExit(
+        "README is neither the Phase 7 review state nor the final v1.0.0 state"
+    )
 
 print(f"Phase 7 repository verification passed ({len(REQUIRED_FILES)} required files).")
