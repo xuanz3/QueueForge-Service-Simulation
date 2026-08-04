@@ -1,13 +1,13 @@
 # QueueForge Project Summary
 
-## Product
+## Purpose
 
-QueueForge is a complete local-first service operations simulator. A user can
-configure a queue scenario, execute one deterministic simulation or compare
-staffing options across repeated runs, observe the durable lifecycle and inspect
+QueueForge tests queue and staffing decisions through a reproducible local
+simulation workflow. Users can run one deterministic scenario or compare
+staffing options across repeated seeds, then inspect the persisted lifecycle and
 versioned JSON output.
 
-## Engineering coverage
+## Engineering scope
 
 - C++20 discrete-event simulation
 - Python experiment orchestration and statistics
@@ -15,32 +15,26 @@ versioned JSON output.
 - PostgreSQL persistence and Flyway migration
 - React and TypeScript product interface
 - Docker multi-stage builds and Compose integration
-- GitHub Actions across unit, integration, reliability and performance gates
+- GitHub Actions for unit, integration, reliability and performance checks
 - Micrometer, Actuator and Prometheus telemetry
-- Playwright evidence automation
+- Playwright screenshot automation
 
-## Verified reference results
+## Reference results
 
 - deterministic C++ output: pass
-- C++ p95: 2.854 ms
-- Python analytics: 0.541 s
+- C++ p95: 1.901 ms
+- Python analytics: 0.586 s
 - API success rate: 100%
-- API end-to-end p95: 202.235 ms
-- final README screenshots: 8
+- API end-to-end p95: 199.79 ms
+- README screenshots: 8
 
 ## Reliability checks
 
-The automated suite verifies bounded admission, HTTP 429, worker exit,
+The automated suite covers bounded admission, HTTP 429 responses, worker exit,
 worker timeout, API restart reconciliation and restoration of a successful
 normal simulation.
 
-## Review path
+## Operating boundary
 
-A reviewer can understand the project in this order:
-
-1. README product screenshots
-2. architecture responsibilities
-3. reliability model
-4. quality and performance method
-5. phase-based PR and Issue history
-6. v1.0.0 release
+QueueForge is intended for local evaluation with fictional scenarios. It is not
+a distributed job platform or an operational staffing recommendation system.
