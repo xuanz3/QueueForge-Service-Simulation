@@ -29,12 +29,14 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${QUEUEFORGE_POSTGRES_PASSWORD:-queueforge_local_only}
       QUEUEFORGE_WEB_ORIGIN: http://localhost:${QUEUEFORGE_WEB_PORT:-15176}
       QUEUEFORGE_WORK_ROOT: /var/lib/queueforge/runs
-      QUEUEFORGE_SIMULATION_COMMAND: /usr/local/bin/queueforge-sim
-      QUEUEFORGE_ANALYTICS_PYTHON: /usr/local/bin/python
-      QUEUEFORGE_ANALYTICS_MODULE: queueforge_analytics
-      QUEUEFORGE_ANALYTICS_ENGINE: /usr/local/bin/queueforge-sim
-      QUEUEFORGE_WORKER_TIMEOUT: PT5M
-      QUEUEFORGE_WORKER_CONCURRENCY: 2
+      QUEUEFORGE_SIMULATION_COMMAND: ${QUEUEFORGE_SIMULATION_COMMAND:-/usr/local/bin/queueforge-sim}
+      QUEUEFORGE_ANALYTICS_PYTHON: ${QUEUEFORGE_ANALYTICS_PYTHON:-/usr/local/bin/python}
+      QUEUEFORGE_ANALYTICS_MODULE: ${QUEUEFORGE_ANALYTICS_MODULE:-queueforge_analytics}
+      QUEUEFORGE_ANALYTICS_ENGINE: ${QUEUEFORGE_ANALYTICS_ENGINE:-/usr/local/bin/queueforge-sim}
+      QUEUEFORGE_WORKER_TIMEOUT: ${QUEUEFORGE_WORKER_TIMEOUT:-PT5M}
+      QUEUEFORGE_WORKER_CONCURRENCY: ${QUEUEFORGE_WORKER_CONCURRENCY:-2}
+      QUEUEFORGE_WORKER_QUEUE_CAPACITY: ${QUEUEFORGE_WORKER_QUEUE_CAPACITY:-4}
+      QUEUEFORGE_FAULT_DELAY_SECONDS: ${QUEUEFORGE_FAULT_DELAY_SECONDS:-20}
     ports:
       - "${QUEUEFORGE_API_PORT:-18086}:8080"
     volumes:
@@ -42,6 +44,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/actuator/health/readiness', timeout=2)
+      interval: 3s
+      timeout: 3s
+      retries: 30
     stop_grace_period: 20s
 
   web:
@@ -52,7 +63,8 @@ services:
     ports:
       - "${QUEUEFORGE_WEB_PORT:-15176}:5173"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
   cpp-engine:
     profiles:

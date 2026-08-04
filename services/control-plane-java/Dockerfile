@@ -42,6 +42,9 @@ RUN python -m pip install --no-cache-dir . \
     && python -m queueforge_analytics health \
     && queueforge-sim --health
 
+COPY tools/faults /opt/queueforge-faults
+RUN chmod 0555 /opt/queueforge-faults/*.sh
+
 WORKDIR /app
 COPY --from=java-build /workspace/service/target/control-plane-java-0.4.0-SNAPSHOT.jar app.jar
 RUN mkdir -p /var/lib/queueforge/runs \
