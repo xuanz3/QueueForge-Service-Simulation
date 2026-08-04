@@ -47,8 +47,8 @@ services:
   web:
     build:
       context: apps/web
-    environment:
-      VITE_API_BASE_URL: http://localhost:${QUEUEFORGE_API_PORT:-18086}
+      args:
+        VITE_API_BASE_URL: http://localhost:${QUEUEFORGE_API_PORT:-18086}
     ports:
       - "${QUEUEFORGE_WEB_PORT:-15176}:5173"
     depends_on:

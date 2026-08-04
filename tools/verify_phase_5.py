@@ -1,5 +1,4 @@
 from pathlib import Path
-import json
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -9,10 +8,12 @@ REQUIRED_FILES = [
     "apps/web/src/scenario.ts",
     "apps/web/src/App.tsx",
     "apps/web/src/styles.css",
+    "apps/web/nginx.conf",
     "docs/product/PHASE_5_PRODUCT_INTERFACE.md",
     "docs/testing/PHASE_5_VERIFICATION.md",
     "docs/testing/INCIDENT-007-PHASE5-VERIFIER-AND-SERVING.md",
     "docs/testing/INCIDENT-008-TYPESCRIPT-GENERIC-SPREAD.md",
+    "docs/testing/INCIDENT-009-WEB-RUNTIME-404.md",
     "tools/verify_phase_5_runtime.py",
     "RUN_PRODUCT_UI_DEMO.command",
     "VERIFY_PHASE_5.command",
@@ -74,14 +75,6 @@ for forbidden in ["dangerouslySetInnerHTML", "Math.random()", "mockResult", "fak
     if forbidden in app:
         raise SystemExit(f"Product interface contains forbidden pattern: {forbidden}")
 
-package = json.loads((ROOT / "apps/web/package.json").read_text(encoding="utf-8"))
-if package.get("scripts", {}).get("preview") != "vite preview --host 0.0.0.0 --port 5173":
-    raise SystemExit("Web package is missing the production preview command")
-
-dockerfile = (ROOT / "apps/web/Dockerfile").read_text(encoding="utf-8")
-if 'CMD ["npm", "run", "preview"]' not in dockerfile:
-    raise SystemExit("Web container does not serve the production Vite build")
-
 workflow = (ROOT / ".github/workflows/quality.yml").read_text(encoding="utf-8")
 if "working-directory: ../.." in workflow:
     raise SystemExit("TypeScript CI contains an unsafe parent working directory")
@@ -106,5 +99,43 @@ for forbidden in [
 ]:
     if forbidden in app:
         raise SystemExit(f"Generic scenario spread is forbidden: {forbidden}")
+
+
+dockerfile = (ROOT / "apps/web/Dockerfile").read_text(encoding="utf-8")
+for required in [
+    "FROM node:24-alpine AS build",
+    "ARG VITE_API_BASE_URL=http://localhost:18086",
+    "RUN npm run build",
+    "FROM nginx:1.27-alpine",
+    "COPY --from=build /app/dist /usr/share/nginx/html",
+    'CMD ["nginx", "-g", "daemon off;"]',
+]:
+    if required not in dockerfile:
+        raise SystemExit(f"Production web image is missing: {required}")
+
+nginx = (ROOT / "apps/web/nginx.conf").read_text(encoding="utf-8")
+for required in [
+    "listen 5173;",
+    "root /usr/share/nginx/html;",
+    "try_files $uri $uri/ /index.html;",
+]:
+    if required not in nginx:
+        raise SystemExit(f"Nginx configuration is missing: {required}")
+
+compose = (ROOT / "compose.yaml").read_text(encoding="utf-8")
+for required in [
+    "args:",
+    "VITE_API_BASE_URL: http://localhost:${QUEUEFORGE_API_PORT:-18086}",
+]:
+    if required not in compose:
+        raise SystemExit(f"Compose web build is missing: {required}")
+
+demo = (ROOT / "RUN_PRODUCT_UI_DEMO.command").read_text(encoding="utf-8")
+for required in [
+    "docker compose rm -sf web",
+    "docker compose up -d --build --force-recreate postgres api web",
+]:
+    if required not in demo:
+        raise SystemExit(f"Product UI runtime reset is missing: {required}")
 
 print(f"Phase 5 repository verification passed ({len(REQUIRED_FILES)} required files).")
