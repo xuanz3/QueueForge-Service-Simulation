@@ -12,6 +12,7 @@ REQUIRED_FILES = [
     "docs/product/PHASE_5_PRODUCT_INTERFACE.md",
     "docs/testing/PHASE_5_VERIFICATION.md",
     "docs/testing/INCIDENT-007-PHASE5-VERIFIER-AND-SERVING.md",
+    "docs/testing/INCIDENT-008-TYPESCRIPT-GENERIC-SPREAD.md",
     "tools/verify_phase_5_runtime.py",
     "RUN_PRODUCT_UI_DEMO.command",
     "VERIFY_PHASE_5.command",
@@ -84,5 +85,26 @@ if 'CMD ["npm", "run", "preview"]' not in dockerfile:
 workflow = (ROOT / ".github/workflows/quality.yml").read_text(encoding="utf-8")
 if "working-directory: ../.." in workflow:
     raise SystemExit("TypeScript CI contains an unsafe parent working directory")
+
+
+for required in [
+    'const updateSimulation = (',
+    'Partial<Scenario["simulation"]>',
+    'const updateArrivals = (',
+    'Partial<Scenario["arrivals"]>',
+    'const updateService = (',
+    'Partial<Scenario["service"]>',
+    'const updateQueue = (',
+    'Partial<Scenario["queue"]>',
+]:
+    if required not in app:
+        raise SystemExit(f"Typed scenario updater is missing: {required}")
+
+for forbidden in [
+    "const updateScenario = <K extends keyof Scenario>",
+    "[section]: { ...current[section], ...values }",
+]:
+    if forbidden in app:
+        raise SystemExit(f"Generic scenario spread is forbidden: {forbidden}")
 
 print(f"Phase 5 repository verification passed ({len(REQUIRED_FILES)} required files).")

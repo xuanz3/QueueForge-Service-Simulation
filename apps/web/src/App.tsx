@@ -254,13 +254,39 @@ export default function App() {
     [analytics, mode, scenario],
   );
 
-  const updateScenario = <K extends keyof Scenario>(
-    section: K,
-    values: Partial<Scenario[K]>,
+  const updateSimulation = (
+    values: Partial<Scenario["simulation"]>,
   ) => {
     setScenario((current) => ({
       ...current,
-      [section]: { ...current[section], ...values },
+      simulation: { ...current.simulation, ...values },
+    }));
+  };
+
+  const updateArrivals = (
+    values: Partial<Scenario["arrivals"]>,
+  ) => {
+    setScenario((current) => ({
+      ...current,
+      arrivals: { ...current.arrivals, ...values },
+    }));
+  };
+
+  const updateService = (
+    values: Partial<Scenario["service"]>,
+  ) => {
+    setScenario((current) => ({
+      ...current,
+      service: { ...current.service, ...values },
+    }));
+  };
+
+  const updateQueue = (
+    values: Partial<Scenario["queue"]>,
+  ) => {
+    setScenario((current) => ({
+      ...current,
+      queue: { ...current.queue, ...values },
     }));
   };
 
@@ -387,12 +413,12 @@ export default function App() {
                 </div>
               </div>
               <div className="form-grid">
-                <Field label="Operating window" value={scenario.simulation.durationMinutes} min={1} max={1440} suffix="minutes" onChange={(value) => updateScenario("simulation", { durationMinutes: value })} />
-                <Field label="Arrival rate" value={scenario.arrivals.ratePerHour} min={0.1} max={600} step={0.5} suffix="per hour" onChange={(value) => updateScenario("arrivals", { ratePerHour: value })} />
-                <Field label="Minimum service" value={scenario.service.minimumMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateScenario("service", { minimumMinutes: value })} />
-                <Field label="Typical service" value={scenario.service.modeMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateScenario("service", { modeMinutes: value })} />
-                <Field label="Maximum service" value={scenario.service.maximumMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateScenario("service", { maximumMinutes: value })} />
-                <Field label="Deterministic seed" value={scenario.simulation.seed} min={0} max={999999999} onChange={(value) => updateScenario("simulation", { seed: value })} />
+                <Field label="Operating window" value={scenario.simulation.durationMinutes} min={1} max={1440} suffix="minutes" onChange={(value) => updateSimulation({ durationMinutes: value })} />
+                <Field label="Arrival rate" value={scenario.arrivals.ratePerHour} min={0.1} max={600} step={0.5} suffix="per hour" onChange={(value) => updateArrivals({ ratePerHour: value })} />
+                <Field label="Minimum service" value={scenario.service.minimumMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateService({ minimumMinutes: value })} />
+                <Field label="Typical service" value={scenario.service.modeMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateService({ modeMinutes: value })} />
+                <Field label="Maximum service" value={scenario.service.maximumMinutes} min={0.1} max={240} step={0.5} suffix="minutes" onChange={(value) => updateService({ maximumMinutes: value })} />
+                <Field label="Deterministic seed" value={scenario.simulation.seed} min={0} max={999999999} onChange={(value) => updateSimulation({ seed: value })} />
               </div>
             </section>
 
@@ -404,11 +430,11 @@ export default function App() {
                 </div>
               </div>
               <div className="form-grid">
-                <Field label="Active servers" value={scenario.queue.serverCount} min={1} max={100} onChange={(value) => updateScenario("queue", { serverCount: value })} />
-                <Field label="Priority customers" value={scenario.queue.priorityCustomerRatio * 100} min={0} max={100} step={1} suffix="percent" onChange={(value) => updateScenario("queue", { priorityCustomerRatio: value / 100 })} />
+                <Field label="Active servers" value={scenario.queue.serverCount} min={1} max={100} onChange={(value) => updateQueue({ serverCount: value })} />
+                <Field label="Priority customers" value={scenario.queue.priorityCustomerRatio * 100} min={0} max={100} step={1} suffix="percent" onChange={(value) => updateQueue({ priorityCustomerRatio: value / 100 })} />
                 <label className="field field-wide">
                   <span>Queue discipline</span>
-                  <select value={scenario.queue.discipline} onChange={(event) => updateScenario("queue", { discipline: event.target.value as Scenario["queue"]["discipline"] })}>
+                  <select value={scenario.queue.discipline} onChange={(event) => updateQueue({ discipline: event.target.value as Scenario["queue"]["discipline"] })}>
                     <option value="priority_fifo">Priority FIFO</option>
                     <option value="fifo">FIFO</option>
                   </select>
