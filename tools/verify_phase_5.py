@@ -14,6 +14,7 @@ REQUIRED_FILES = [
     "docs/testing/INCIDENT-007-PHASE5-VERIFIER-AND-SERVING.md",
     "docs/testing/INCIDENT-008-TYPESCRIPT-GENERIC-SPREAD.md",
     "docs/testing/INCIDENT-009-WEB-RUNTIME-404.md",
+    "docs/testing/INCIDENT-010-TYPECHECK-IN-NGINX.md",
     "tools/verify_phase_5_runtime.py",
     "RUN_PRODUCT_UI_DEMO.command",
     "VERIFY_PHASE_5.command",
@@ -137,5 +138,25 @@ for required in [
 ]:
     if required not in demo:
         raise SystemExit(f"Product UI runtime reset is missing: {required}")
+
+dockerfile = (ROOT / "apps/web/Dockerfile").read_text(encoding="utf-8")
+for required in [
+    "FROM build AS typecheck",
+    "RUN npm run typecheck",
+]:
+    if required not in dockerfile:
+        raise SystemExit(f"Typecheck build stage is missing: {required}")
+
+phase5_command = (ROOT / "VERIFY_PHASE_5.command").read_text(encoding="utf-8")
+for required in [
+    "--target typecheck",
+    "queueforge-web-typecheck:phase5",
+    "apps/web",
+]:
+    if required not in phase5_command:
+        raise SystemExit(f"Phase 5 typecheck command is missing: {required}")
+
+if "docker compose run --rm -T --no-deps web npm run typecheck" in phase5_command:
+    raise SystemExit("Phase 5 attempts to run npm inside the Nginx service")
 
 print(f"Phase 5 repository verification passed ({len(REQUIRED_FILES)} required files).")

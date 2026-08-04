@@ -16,7 +16,10 @@ docker info >/dev/null
 docker compose config >/dev/null
 
 docker compose build web
-docker compose run --rm -T --no-deps web npm run typecheck
+docker build \
+  --target typecheck \
+  --tag queueforge-web-typecheck:phase5 \
+  apps/web
 ./RUN_PRODUCT_UI_DEMO.command
 
 echo "Phase 5 verification passed."
