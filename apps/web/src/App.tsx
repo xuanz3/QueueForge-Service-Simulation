@@ -338,7 +338,11 @@ export default function App() {
           <i />
           <span>
             {connection.kind === "ready"
-              ? `API ${connection.data.version} · ${connection.data.database}`
+              ? `API ${connection.data.version} · ${connection.data.database}${
+                  connection.data.capacity
+                    ? ` · ${connection.data.capacity.available}/${connection.data.capacity.maximum} slots`
+                    : ""
+                }`
               : connection.kind === "loading"
                 ? "Checking local stack"
                 : connection.message}
