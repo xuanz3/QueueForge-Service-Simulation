@@ -10,6 +10,7 @@ COPY engines/simulation-cpp/include include
 COPY engines/simulation-cpp/src src
 COPY engines/simulation-cpp/tests tests
 RUN cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+    -DQUEUEFORGE_WARNINGS_AS_ERRORS=ON \
     && cmake --build build \
     && ctest --test-dir build --output-on-failure
 
