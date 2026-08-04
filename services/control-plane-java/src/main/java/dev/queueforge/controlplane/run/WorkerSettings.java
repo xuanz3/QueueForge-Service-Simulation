@@ -10,5 +10,10 @@ public record WorkerSettings(
         String analyticsModule,
         Path analyticsEngine,
         Duration timeout,
-        int maxConcurrency) {
+        int maxConcurrency,
+        int queueCapacity) {
+
+    public int maxOutstandingRuns() {
+        return maxConcurrency + queueCapacity;
+    }
 }

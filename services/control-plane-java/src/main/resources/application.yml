@@ -14,10 +14,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,flyway
+        include: health,info,flyway,metrics,prometheus
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db,queueforgeWorkers
+        liveness:
+          include: livenessState
+  metrics:
+    tags:
+      application: queueforge-control-plane
 
 server:
   shutdown: graceful
@@ -34,3 +44,4 @@ queueforge:
     analytics-engine: ${QUEUEFORGE_ANALYTICS_ENGINE:/usr/local/bin/queueforge-sim}
     timeout: ${QUEUEFORGE_WORKER_TIMEOUT:PT5M}
     max-concurrency: ${QUEUEFORGE_WORKER_CONCURRENCY:2}
+    queue-capacity: ${QUEUEFORGE_WORKER_QUEUE_CAPACITY:4}

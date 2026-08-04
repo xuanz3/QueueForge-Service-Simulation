@@ -16,6 +16,8 @@ public class RunService {
     private final WorkerProcessRunner workerRunner;
     private final JsonMapper jsonMapper;
     private final ExecutorService executor;
+    private final RunAdmissionController admission;
+    private final RunTelemetry telemetry;
     private final Clock clock;
 
     @Autowired
@@ -24,8 +26,18 @@ public class RunService {
             ScenarioValidator validator,
             WorkerProcessRunner workerRunner,
             JsonMapper jsonMapper,
-            ExecutorService executor) {
-        this(repository, validator, workerRunner, jsonMapper, executor, Clock.systemUTC());
+            ExecutorService executor,
+            RunAdmissionController admission,
+            RunTelemetry telemetry) {
+        this(
+                repository,
+                validator,
+                workerRunner,
+                jsonMapper,
+                executor,
+                admission,
+                telemetry,
+                Clock.systemUTC());
     }
 
     RunService(
@@ -34,22 +46,50 @@ public class RunService {
             WorkerProcessRunner workerRunner,
             JsonMapper jsonMapper,
             ExecutorService executor,
+            RunAdmissionController admission,
+            RunTelemetry telemetry,
             Clock clock) {
         this.repository = repository;
         this.validator = validator;
         this.workerRunner = workerRunner;
         this.jsonMapper = jsonMapper;
         this.executor = executor;
+        this.admission = admission;
+        this.telemetry = telemetry;
         this.clock = clock;
     }
 
     public RunRecord submit(CreateRunRequest request) {
         NormalizedRunRequest normalized = validator.normalize(request);
+        if (!admission.tryAcquire()) {
+            telemetry.rejected();
+            throw new RunCapacityException(admission.snapshot());
+        }
+
         UUID id = UUID.randomUUID();
-        Instant createdAt = clock.instant();
-        repository.insert(id, normalized.type(), writeJson(normalized), createdAt);
-        executor.execute(() -> execute(id, normalized));
-        return get(id);
+        boolean handedOff = false;
+        boolean inserted = false;
+        try {
+            Instant createdAt = clock.instant();
+            repository.insert(id, normalized.type(), writeJson(normalized), createdAt);
+            inserted = true;
+            executor.execute(() -> execute(id, normalized));
+            handedOff = true;
+            telemetry.submitted();
+            return get(id);
+        } catch (RuntimeException exception) {
+            if (inserted && !handedOff) {
+                repository.markFailed(
+                        id,
+                        "CONTROL_PLANE_SCHEDULING",
+                        "The run could not be scheduled: " + exception.getMessage(),
+                        clock.instant());
+            }
+            if (!handedOff) {
+                admission.release();
+            }
+            throw exception;
+        }
     }
 
     public RunRecord get(UUID id) {
@@ -85,26 +125,53 @@ public class RunService {
     }
 
     private void execute(UUID id, NormalizedRunRequest request) {
-        if (!repository.markRunning(id, clock.instant())) {
-            return;
-        }
+        long startedNanos = System.nanoTime();
+        boolean started = false;
+        RunStatus terminalStatus = null;
+
         try {
+            if (!repository.markRunning(id, clock.instant())) {
+                RunStatus current = get(id).status();
+                if (current.isTerminal()) {
+                    telemetry.terminalWithoutStart(current);
+                }
+                return;
+            }
+
+            started = true;
+            telemetry.started();
+
             String result = workerRunner.execute(
                     id,
                     request,
                     () -> repository.isCancellationRequested(id),
                     processId -> repository.setProcessId(id, processId));
+
             if (repository.isCancellationRequested(id)) {
+                terminalStatus = RunStatus.CANCELLED;
                 repository.markCancelled(id, clock.instant());
             } else {
+                terminalStatus = RunStatus.SUCCEEDED;
                 repository.markSucceeded(id, result, clock.instant());
             }
         } catch (WorkerCancelledException exception) {
+            terminalStatus = RunStatus.CANCELLED;
             repository.markCancelled(id, clock.instant());
         } catch (WorkerExecutionException exception) {
+            terminalStatus = RunStatus.FAILED;
             repository.markFailed(id, exception.code(), exception.getMessage(), clock.instant());
         } catch (RuntimeException exception) {
-            repository.markFailed(id, "CONTROL_PLANE_ERROR", exception.getMessage(), clock.instant());
+            terminalStatus = RunStatus.FAILED;
+            repository.markFailed(
+                    id,
+                    "CONTROL_PLANE_ERROR",
+                    exception.getMessage(),
+                    clock.instant());
+        } finally {
+            if (started && terminalStatus != null) {
+                telemetry.completed(terminalStatus, startedNanos);
+            }
+            admission.release();
         }
     }
 
@@ -112,7 +179,8 @@ public class RunService {
         try {
             return jsonMapper.writeValueAsString(value);
         } catch (Exception exception) {
-            throw new InvalidRunRequestException("Unable to serialize run request: " + exception.getMessage());
+            throw new InvalidRunRequestException(
+                    "Unable to serialize run request: " + exception.getMessage());
         }
     }
 }
