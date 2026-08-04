@@ -26,6 +26,8 @@ REQUIRED_FILES = [
     "docs/decisions/ADR-005-local-process-orchestration.md",
     "docs/operations/RUN_LIFECYCLE.md",
     "docs/testing/PHASE_4_VERIFICATION.md",
+    "services/control-plane-java/src/test/java/dev/queueforge/controlplane/run/RunServiceContextTest.java",
+    "docs/testing/INCIDENT-002-SPRING-CONSTRUCTOR-SELECTION.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]
@@ -76,5 +78,44 @@ process_runner = (
 for control in ["WORKER_TIMEOUT", "WorkerCancelledException", "destroyForcibly"]:
     if control not in process_runner:
         raise SystemExit(f"Worker runner is missing lifecycle control: {control}")
+
+
+run_service = (
+    ROOT
+    / "services/control-plane-java/src/main/java/dev/queueforge/controlplane/run/RunService.java"
+).read_text(encoding="utf-8")
+
+if "import org.springframework.beans.factory.annotation.Autowired;" not in run_service:
+    raise SystemExit("RunService is missing the Autowired constructor import")
+
+production_signature = (
+    "    @Autowired\n"
+    "    public RunService(\n"
+    "            RunRepository repository,\n"
+    "            ScenarioValidator validator,\n"
+    "            WorkerProcessRunner workerRunner,\n"
+    "            JsonMapper jsonMapper,\n"
+    "            ExecutorService executor) {"
+)
+
+if production_signature not in run_service:
+    raise SystemExit("RunService production constructor is not explicitly autowired")
+
+context_test = (
+    ROOT
+    / "services/control-plane-java/src/test/java/dev/queueforge/controlplane/run/"
+    "RunServiceContextTest.java"
+).read_text(encoding="utf-8")
+
+for required in [
+    "AnnotationConfigApplicationContext",
+    "context.registerBean(RunService.class)",
+    "context.refresh()",
+    "context.getBean(RunService.class)",
+]:
+    if required not in context_test:
+        raise SystemExit(
+            f"RunService context regression test is missing requirement: {required}"
+        )
 
 print(f"Phase 4 repository verification passed ({len(REQUIRED_FILES)} required files).")

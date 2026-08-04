@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -17,6 +18,7 @@ public class RunService {
     private final ExecutorService executor;
     private final Clock clock;
 
+    @Autowired
     public RunService(
             RunRepository repository,
             ScenarioValidator validator,
