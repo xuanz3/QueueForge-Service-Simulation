@@ -67,6 +67,33 @@ jobs:
       - name: Health command
         run: python -m queueforge_analytics health
 
+  analytics-integration:
+    name: Python and C++ analytics integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install analytics
+        run: python -m pip install analytics/queueforge-python
+      - name: Build C++ engine
+        run: |
+          cmake -S engines/simulation-cpp -B engines/simulation-cpp/build \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build engines/simulation-cpp/build --parallel
+      - name: Run fixed integration experiment
+        run: |
+          python -m queueforge_analytics experiment \
+            --scenario contracts/examples/basic-scenario.json \
+            --output-dir runtime/phase3-ci \
+            --server-counts 3,4,5 \
+            --runs 40 \
+            --seed-start 20260801 \
+            --engine engines/simulation-cpp/build/queueforge-sim
+      - name: Verify integration report
+        run: python tools/verify_phase_3_report.py runtime/phase3-ci/staffing-comparison.json
+
   java:
     name: Java tests
     runs-on: ubuntu-latest
@@ -117,5 +144,7 @@ jobs:
         run: python tools/verify_cpp_runtime.py
       - name: Verify Phase 2
         run: python tools/verify_phase_2.py
+      - name: Verify Phase 3
+        run: python tools/verify_phase_3.py
       - name: Validate Compose
         run: docker compose config
