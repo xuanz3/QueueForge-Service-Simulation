@@ -6,7 +6,7 @@ QueueForge combines a deterministic C++20 simulation engine, Python multi-seed a
 
 ## Current status
 
-**Phase 6 — Reliability and Recovery**
+**Phase 7 — Quality and Performance**
 
 Implemented evidence:
 
@@ -20,7 +20,7 @@ Implemented evidence:
 - completed result retrieval after API restart
 - Docker integration testing across all three languages
 
-The application now supports an end-to-end local product workflow. Reliability hardening and failure injection belong to Phase 6.
+The application now supports an end-to-end local product workflow. Reliability and fault handling are complete. Phase 7 adds portable quality and performance regression evidence.
 
 ## Run the control-plane demo
 
@@ -65,6 +65,20 @@ worker failure, worker timeout, API restart reconciliation, Actuator readiness
 and Prometheus telemetry. The final step restores the normal stack and proves a
 new simulation succeeds.
 
+## Quality and performance evidence
+
+Run:
+
+```bash
+./VERIFY_PHASE_7.command
+```
+
+The gate compiles C++ with warnings treated as errors, runs cross-language
+quality checks, measures fixed-seed determinism, benchmarks Python analytics
+and concurrent API lifecycles, and enforces Web bundle and Docker image
+budgets. Generated JSON and Markdown reports remain environment-specific and
+are uploaded by CI as `phase7-performance-evidence`.
+
 ## Architecture responsibilities
 
 | Component | Responsibility |
@@ -77,6 +91,10 @@ new simulation succeeds.
 
 ## Evidence
 
+- [Quality policy](docs/quality/QUALITY_POLICY.md)
+- [Performance method](docs/performance/PERFORMANCE_METHOD.md)
+- [Performance budget decision](docs/decisions/ADR-006-performance-budgets.md)
+- [Phase 7 verification](docs/testing/PHASE_7_VERIFICATION.md)
 - [Control-plane architecture](docs/architecture/CONTROL_PLANE.md)
 - [Local process orchestration decision](docs/decisions/ADR-005-local-process-orchestration.md)
 - [Run lifecycle](docs/operations/RUN_LIFECYCLE.md)
@@ -92,8 +110,8 @@ new simulation succeeds.
 4. Python analytics — complete
 5. Java control plane — complete
 6. React product interface — complete
-7. Reliability and fault handling
-8. Quality and performance
+7. Reliability and fault handling — complete
+8. Quality and performance — in review
 9. Portfolio release
 
 ## Evidence policy
