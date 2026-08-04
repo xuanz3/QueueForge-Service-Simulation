@@ -80,9 +80,9 @@ PY_ID
 wait_for_terminal() {
   local run_id="$1"
   local response_file="$2"
+  local run_status=""
   for attempt in {1..180}; do
     curl -fsS "http://localhost:18086/api/runs/$run_id" > "$response_file"
-    local run_status
     run_status="$(python3 - "$response_file" <<'PY_STATUS'
 import json, sys
 print(json.load(open(sys.argv[1]))["status"])

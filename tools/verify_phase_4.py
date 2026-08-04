@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "services/control-plane-java/src/test/java/dev/queueforge/controlplane/run/RunServiceContextTest.java",
     "docs/testing/INCIDENT-002-SPRING-CONSTRUCTOR-SELECTION.md",
     "docs/testing/INCIDENT-003-ZSH-STATUS-PARAMETER.md",
+    "docs/testing/INCIDENT-004-ZSH-LOOP-LOCAL-OUTPUT.md",
 ]
 
 missing = [item for item in REQUIRED_FILES if not (ROOT / item).is_file()]
@@ -145,5 +146,29 @@ for required in [
         raise SystemExit(
             f"Phase 4 lifecycle script is missing safe run status handling: {required}"
         )
+
+
+demo_script = (ROOT / "RUN_CONTROL_PLANE_DEMO.command").read_text(
+    encoding="utf-8"
+)
+
+function_start = demo_script.index("wait_for_terminal() {")
+function_end = demo_script.index("\n}\n\nSIMULATION_ID=", function_start)
+wait_function = demo_script[function_start:function_end]
+
+safe_order = (
+    '  local run_status=""\n'
+    '  for attempt in {1..180}; do\n'
+)
+
+if safe_order not in wait_function:
+    raise SystemExit(
+        "Phase 4 lifecycle must initialize run_status before the polling loop"
+    )
+
+if "    local run_status\n" in wait_function:
+    raise SystemExit(
+        "Phase 4 lifecycle redeclares run_status inside the polling loop"
+    )
 
 print(f"Phase 4 repository verification passed ({len(REQUIRED_FILES)} required files).")
